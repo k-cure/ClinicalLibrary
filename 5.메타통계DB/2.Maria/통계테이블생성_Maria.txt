@@ -1,0 +1,174 @@
+-- bplb.cancer_tbl_stats definition
+
+CREATE TABLE `cancer_tbl_stats` (
+  `HOSP_CD` varchar(20) NOT NULL COMMENT '병원코드',
+  `TBL_ID` varchar(20) NOT NULL COMMENT '테이블ID',
+  `COL_CNT` varchar(20) NOT NULL COMMENT '컬럼ID',
+  `COL_SEQ` decimal(5,0) NOT NULL COMMENT '컬럼순번',
+  `ROW_CNT` decimal(20,0) DEFAULT NULL COMMENT 'ROW수',
+  `TBL_CAPA` decimal(20,0) DEFAULT NULL COMMENT '테이블용량',
+  `STATS_WORK_YMD` varchar(8) DEFAULT NULL COMMENT '통계작업일자',
+  `COLL_STRT_YMD` varchar(8) DEFAULT NULL COMMENT '수집시작일자',
+  `COLL_END_YMD` varchar(8) DEFAULT NULL COMMENT '수집종료일자',
+  `CRTN_DT` timestamp NULL DEFAULT current_timestamp() COMMENT '생성일시',
+  PRIMARY KEY (`HOSP_CD`,`TBL_ID`)
+) COMMENT='암_테이블_통계';
+
+
+-- bplb.cncr_code_meta definition
+
+CREATE TABLE `cncr_code_meta` (
+  `HOSP_CD` varchar(20) NOT NULL COMMENT '병원코드',
+  `CD_CLCD` varchar(20) NOT NULL COMMENT '코드분류코드',
+  `CD_ID` varchar(200) NOT NULL COMMENT '코드ID',
+  `CD_VL` varchar(200) NOT NULL COMMENT '코드값',
+  `CD_NM` varchar(200) NOT NULL COMMENT '코드명',
+  `CD_VL_NM` varchar(200) NOT NULL COMMENT '코드값명',
+  `ARRY_ORD_VL` varchar(10) NOT NULL COMMENT '정렬순서값',
+  `CD_EXPL_CONT` varchar(4000) NOT NULL COMMENT '코드설명내용',
+  `CRTN_DT` timestamp NULL DEFAULT current_timestamp() COMMENT '생성일시',
+  PRIMARY KEY (`HOSP_CD`,`CD_CLCD`,`CD_ID`,`CD_VL`)
+) COMMENT='암_코드_메타';
+
+
+-- bplb.cncr_tbl_cd_dtrn_stats definition
+
+CREATE TABLE `cncr_tbl_cd_dtrn_stats` (
+  `HOSP_CD` varchar(20) NOT NULL COMMENT '병원코드',
+  `TBL_ID` varchar(20) NOT NULL COMMENT '테이블ID',
+  `COL_ID` varchar(20) NOT NULL COMMENT '컬럼ID',
+  `CD_VL` varchar(200) NOT NULL COMMENT '코드값',
+  `COL_SEQ` decimal(3,0) DEFAULT NULL COMMENT '컬럼순번',
+  `ROW_CNT` decimal(20,0) DEFAULT NULL COMMENT 'ROW수',
+  `PT_CNT` decimal(20,0) DEFAULT NULL COMMENT '환자수',
+  `STATS_WORK_YMD` varchar(8) DEFAULT NULL COMMENT '통계작업일자',
+  `COLL_STRT_YMD` varchar(8) DEFAULT NULL COMMENT '수집시작일자',
+  `COLL_END_YMD` varchar(8) DEFAULT NULL COMMENT '수집종료일자',
+  `CRTN_DT` timestamp NULL DEFAULT current_timestamp() COMMENT '생성일시',
+  PRIMARY KEY (`HOSP_CD`,`TBL_ID`,`COL_ID`,`CD_VL`)
+) COMMENT='암_테이블_코드_기간_통계';
+
+
+-- bplb.cncr_tbl_cd_yr_stats definition
+
+CREATE TABLE `cncr_tbl_cd_yr_stats` (
+  `HOSP_CD` varchar(20) NOT NULL COMMENT '병원코드',
+  `TBL_ID` varchar(20) NOT NULL COMMENT '테이블ID',
+  `COL_ID` varchar(20) NOT NULL COMMENT '컬럼ID',
+  `CD_VL` varchar(200) NOT NULL COMMENT '코드값',
+  `COL_SEQ` decimal(3,0) NOT NULL COMMENT '컬럼순번',
+  `CRIT_YR` varchar(4) NOT NULL COMMENT '기준년도',
+  `ROW_CNT` decimal(20,0) DEFAULT NULL COMMENT 'ROW수',
+  `PT_CNT` decimal(20,0) DEFAULT NULL COMMENT '환자수',
+  `STATS_WORK_YMD` varchar(8) DEFAULT NULL COMMENT '통계작업일자',
+  `COLL_STRT_YMD` varchar(8) DEFAULT NULL COMMENT '수집시작일자',
+  `COLL_END_YMD` varchar(8) DEFAULT NULL COMMENT '수집종료일자',
+  `CRTN_DT` timestamp NULL DEFAULT current_timestamp() COMMENT '생성일시',
+  PRIMARY KEY (`HOSP_CD`,`TBL_ID`,`COL_ID`,`CD_VL`,`COL_SEQ`,`CRIT_YR`)
+) COMMENT='암_테이블_코드_년도_통계';
+
+
+-- bplb.cncr_tbl_col_dtrn_stats definition
+
+CREATE TABLE `cncr_tbl_col_dtrn_stats` (
+  `HOSP_CD` varchar(20) NOT NULL COMMENT '병원코드',
+  `TBL_ID` varchar(20) NOT NULL COMMENT '테이블ID',
+  `COL_ID` varchar(20) NOT NULL COMMENT '컬럼ID',
+  `COL_SEQ` decimal(3,0) DEFAULT NULL COMMENT '컬럼순번',
+  `ROW_CNT` decimal(20,0) DEFAULT NULL COMMENT 'ROW수',
+  `NULL_NCS` decimal(20,0) DEFAULT NULL COMMENT 'NULL건수',
+  `PT_CNT` decimal(20,0) DEFAULT NULL COMMENT '환자수',
+  `AVE_VL` decimal(20,0) DEFAULT NULL COMMENT '평균값',
+  `MIN_VL` decimal(20,0) DEFAULT NULL COMMENT '최소값',
+  `N1_QRTL_CNT` decimal(30,0) DEFAULT NULL COMMENT '1사분위수',
+  `N2_QRTL_CNT` decimal(30,0) DEFAULT NULL COMMENT '2사분위수',
+  `N3_QRTL_CNT` decimal(30,0) DEFAULT NULL COMMENT '3사분위수',
+  `N4_QRTL_CNT` decimal(30,0) DEFAULT NULL COMMENT '4사분위수',
+  `MODE_VL` decimal(20,0) DEFAULT NULL COMMENT '최빈값',
+  `STATS_WORK_YMD` varchar(8) DEFAULT NULL COMMENT '통계작업일자',
+  `COLL_STRT_YMD` varchar(8) DEFAULT NULL COMMENT '수집시작일자',
+  `COLL_END_YMD` varchar(8) DEFAULT NULL COMMENT '수집종료일자',
+  `CRTN_DT` timestamp NULL DEFAULT current_timestamp() COMMENT '생성일시',
+  PRIMARY KEY (`HOSP_CD`,`TBL_ID`,`COL_ID`)
+) COMMENT='암_테이블_컬럼_기간_통계';
+
+
+-- bplb.cncr_tbl_col_meta definition
+
+CREATE TABLE `cncr_tbl_col_meta` (
+  `TBL_ID` varchar(20) NOT NULL COMMENT '테이블ID',
+  `COL_ID` varchar(20) NOT NULL COMMENT '컬럼ID',
+  `TBL_LCLS_CD` varchar(20) NOT NULL COMMENT '테이블대분류코드',
+  `TBL_MCLS_CD` varchar(20) NOT NULL COMMENT '테이블중분류코드',
+  `ENG_TBL_NM` varchar(200) NOT NULL COMMENT '영문테이블명',
+  `KOR_TBL_NM` varchar(1000) NOT NULL COMMENT '한글테이블명',
+  `ENG_COL_NM` varchar(200) NOT NULL COMMENT '영문컬럼명',
+  `KOR_COL_NM` varchar(1000) NOT NULL COMMENT '한글컬럼명',
+  `COL_SEQ` decimal(3,0) NOT NULL COMMENT '컬럼순번',
+  `COL_PK_YN` varchar(20) NOT NULL COMMENT '컬럼PK여부',
+  `DOMN_NM` varchar(1000) NOT NULL COMMENT '도메인명',
+  `DATA_TP_CONT` varchar(100) NOT NULL COMMENT '데이터타입내용',
+  `DATA_LNTH_CONT` varchar(100) NOT NULL COMMENT '데이터길이내용',
+  `COL_EXPL_CONT` varchar(4000) NOT NULL COMMENT '컬럼설명내용',
+  `CD_NM` varchar(200) NOT NULL COMMENT '코드명',
+  `CD_CLCD` varchar(20) NOT NULL COMMENT '코드분류코드',
+  `HOSP_CD` varchar(20) NOT NULL COMMENT '병원코드',
+  `OPEN_YN` varchar(20) NOT NULL COMMENT '공개여부',
+  `CRTN_DT` timestamp NULL DEFAULT current_timestamp() COMMENT '생성일시',
+  PRIMARY KEY (`TBL_ID`,`COL_ID`)
+) COMMENT='암_테이블_컬럼_메타';
+
+
+-- bplb.cncr_tbl_col_yr_stats definition
+
+CREATE TABLE `cncr_tbl_col_yr_stats` (
+  `HOSP_CD` varchar(20) NOT NULL COMMENT '병원코드',
+  `TBL_ID` varchar(20) NOT NULL COMMENT '테이블ID',
+  `COL_ID` varchar(20) NOT NULL COMMENT '컬럼ID',
+  `COL_SEQ` decimal(3,0) NOT NULL COMMENT '컬럼순번',
+  `CRIT_YR` varchar(4) NOT NULL COMMENT '기준년도',
+  `ROW_CNT` decimal(20,0) DEFAULT NULL COMMENT 'ROW수',
+  `PT_CNT` decimal(20,0) DEFAULT NULL COMMENT '환자수',
+  `STATS_WORK_YMD` varchar(8) DEFAULT NULL COMMENT '통계작업일자',
+  `COLL_STRT_YMD` varchar(8) DEFAULT NULL COMMENT '수집시작일자',
+  `COLL_END_YMD` varchar(8) DEFAULT NULL COMMENT '수집종료일자',
+  `CRTN_DT` timestamp NULL DEFAULT current_timestamp() COMMENT '생성일시',
+  PRIMARY KEY (`HOSP_CD`,`TBL_ID`,`COL_ID`,`COL_SEQ`,`CRIT_YR`)
+) COMMENT='암_테이블_컬럼_년도_통계';
+
+
+-- bplb.cncr_tbl_meta definition
+
+CREATE TABLE `cncr_tbl_meta` (
+  `TBL_ID` varchar(20) NOT NULL COMMENT '테이블ID',
+  `TBL_LCLS_CD` varchar(20) NOT NULL COMMENT '테이블대분류코드',
+  `TBL_MCLS_CD` varchar(20) NOT NULL COMMENT '테이블중분류코드',
+  `ENG_TBL_NM` varchar(200) NOT NULL COMMENT '영문테이블명',
+  `KOR_TBL_NM` varchar(1000) NOT NULL COMMENT '한글테이블명',
+  `TBL_EXPL_CONT` varchar(4000) NOT NULL COMMENT '테이블설명내용',
+  `YR_CRIT_ENG_COL_NM` varchar(200) NOT NULL COMMENT '년도기준영문컬럼명',
+  `CRTN_DT` timestamp NULL DEFAULT current_timestamp() COMMENT '생성일시',
+  PRIMARY KEY (`TBL_ID`)
+) COMMENT='암_테이블_메타';
+
+
+		CREATE TABLE CNCR_TBL_SMRY_STATS(			
+SMRY_STATS_NO 	VARCHAR(10)	NOT NULL	,
+HOSP_CD	VARCHAR(20	NOT NULL	,
+CRIT_YR	VARCHAR(4)	NOT NULL	,
+SMRY_STATS_NM	VARCHAR(1000)	NOT NULL	,
+TBL_ID	VARCHAR(20)	NOT NULL	,
+COL_ID	VARCHAR(20	NOT NULL	,
+PT_AGE	DECIMAL(4,0)	NOT NULL,
+PT_SEX_CD	VARCHAR(20)	NOT NULL,
+STATS_TRGT_VL	NVARCHAR(4000)	NOT NULL,
+NCS	DECIMAL(20,0)		,
+WHOL_NCS	DECIMAL(20,0)		,
+PT_CNT	DECIMAL(20,0)		,
+WHOL_PT_CNT	DECIMAL(20,0)		,
+STATS_WORK_YMD	VARCHAR(8)	NOT NULL	,
+COLL_STRT_YMD	VARCHAR(8)	NOT NULL	,
+COLL_END_YMD	VARCHAR(8)	NOT NULL	,
+CRTN_DT	TIMESTAMP	NOT NULL	,
+CONSTRAINT CNCR_TBL_SMRY_STATS_PK PRIMARY KEY	(SMRY_STATS_NO,HOSP_CD,CRIT_YR,PT_AGE,PT_SEX_CD,STATS_TRGT_VL	)	
+);			
