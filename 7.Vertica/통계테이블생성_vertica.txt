@@ -1,0 +1,213 @@
+-- cancer_tbl_stats definition
+
+-- Drop table
+
+-- DROP TABLE cancer_tbl_stats;
+
+/* CREATE TABLE cancer_tbl_stats (
+	hosp_cd varchar(20) NOT NULL,
+	tbl_id varchar(20)  NOT NULL,
+	col_cnt varchar(20) NULL,
+	col_seq numeric(5) NULL,
+	row_cnt numeric(20) NULL,
+	tbl_capa numeric(20)      NOT NULL,
+	stats_work_ymd varchar(8) NOT NULL,
+	coll_strt_ymd varchar(8)  NOT NULL,
+	coll_end_ymd varchar(8)   NOT NULL,
+	crtn_dt timestamp NOT NULL
+);*/
+
+
+-- cncr_code_meta definition
+
+-- Drop table
+
+--DROP TABLE cncr_code_meta;
+
+/*CREATE TABLE cncr_code_meta (
+	hosp_cd varchar(20)     NOT NULL,
+	cd_clcd varchar(20)     NOT NULL,
+	cd_id varchar(20)      NOT NULL,
+	cd_vl varchar(200)      NOT NULL,
+	cd_nm varchar(200)      NOT NULL,
+	cd_vl_nm varchar(200)   NOT NULL,
+	arry_ord_vl varchar(10) NOT NULL,
+	cd_expl_cont varchar(4000) NULL,
+	crtn_dt timestamp NOT NULL
+);*/
+
+
+-- cncr_tbl_cd_dtrn_stats definition
+
+-- Drop table
+
+DROP TABLE cncr_tbl_cd_dtrn_stats;
+
+CREATE TABLE cncr_tbl_cd_dtrn_stats (
+	hosp_cd varchar(20) NOT NULL,
+	tbl_id varchar(20)  NOT NULL,
+	col_id varchar(20)  NOT NULL,
+	cd_vl varchar(200)  NOT NULL,
+	col_seq numeric(3) NULL,
+	row_cnt numeric(20) NULL,
+	pt_cnt numeric(20) NULL,
+	stats_work_ymd varchar(8) NOT NULL,
+	coll_strt_ymd varchar(8)  NOT NULL,
+	coll_end_ymd varchar(8)   NOT NULL,
+	crtn_dt timestamp NOT NULL
+);
+
+
+-- cncr_tbl_cd_yr_stats definition
+
+-- Drop table
+
+DROP TABLE cncr_tbl_cd_yr_stats;
+
+CREATE TABLE cncr_tbl_cd_yr_stats (
+	hosp_cd varchar(20) NOT NULL,
+	tbl_id varchar(20)  NOT NULL,
+	col_id varchar(20)  NOT NULL,
+	cd_vl varchar(200)  NOT NULL,
+	col_seq numeric(3)  NOT NULL,
+	crit_yr varchar(4)  NOT NULL,
+	row_cnt numeric(20) NULL,
+	pt_cnt numeric(20) NULL,
+	stats_work_ymd varchar(8) NOT NULL,
+	coll_strt_ymd varchar(8)  NOT NULL,
+	coll_end_ymd varchar(8)   NOT NULL,
+	crtn_dt timestamp NOT NULL
+);
+
+
+-- cncr_tbl_col_dtrn_stats definition
+
+-- Drop table
+
+DROP TABLE cncr_tbl_col_dtrn_stats;
+
+CREATE TABLE cncr_tbl_col_dtrn_stats (
+	hosp_cd varchar(20) NOT NULL,
+	tbl_id varchar(20)  NOT NULL,
+	col_id varchar(20)  NOT NULL,
+	col_seq numeric(3) NULL,
+	row_cnt numeric(20) NULL,
+	null_ncs numeric(20) NULL,
+	pt_cnt numeric(20) NULL,
+	ave_vl numeric(20) NULL,
+	min_vl numeric(20) NULL,
+	n1_qrtl_cnt numeric(30) NULL,
+	n2_qrtl_cnt numeric(30) NULL,
+	n3_qrtl_cnt numeric(30) NULL,
+	n4_qrtl_cnt numeric(30) NULL,
+	mode_vl numeric(20) NULL,
+	stats_work_ymd varchar(8) NOT NULL,
+	coll_strt_ymd varchar(8)  NOT NULL,
+	coll_end_ymd varchar(8)   NOT NULL,
+	crtn_dt timestamp NOT NULL
+);
+
+
+-- cncr_tbl_col_meta definition
+
+-- Drop table
+
+-- DROP TABLE cncr_tbl_col_meta;
+
+/*CREATE TABLE cncr_tbl_col_meta (
+	tbl_id varchar(20) NOT NULL,
+	col_id varchar(20) NOT NULL,
+	tbl_lcls_cd varchar(20) NULL,
+	tbl_mcls_cd varchar(20) NULL,
+	eng_tbl_nm varchar(200) NULL,
+	kor_tbl_nm varchar(1000) NULL,
+	eng_col_nm varchar(200) NULL,
+	kor_col_nm varchar(1000) NULL,
+	col_seq numeric(3) NULL,
+	col_pk_yn varchar(20) NULL,
+	domn_nm varchar(1000) NULL,
+	data_tp_cont varchar(100) NULL,
+	data_lnth_cont varchar(100) NULL,
+	col_expl_cont varchar(4000) NULL,
+	cd_nm varchar(200) NULL,
+	cd_clcd varchar(20) NULL,
+	hosp_cd varchar(20) NULL,
+	open_yn varchar(20) NULL,
+	crtn_dt timestamp NOT NULL
+);*/
+
+
+-- cncr_tbl_col_yr_stats definition
+
+-- Drop table
+
+DROP TABLE cncr_tbl_col_yr_stats;
+
+CREATE TABLE cncr_tbl_col_yr_stats (
+	hosp_cd varchar(20) NOT NULL,
+	tbl_id varchar(20)  NOT NULL,
+	col_id varchar(20)  NOT NULL,
+	col_seq numeric(3)  NOT NULL,
+	crit_yr varchar(4)  NOT NULL,
+	row_cnt numeric(20) NULL,
+	pt_cnt numeric(20) NULL,
+	stats_work_ymd varchar(8) NOT NULL,
+	coll_strt_ymd varchar(8)  NOT NULL,
+	coll_end_ymd varchar(8)   NOT NULL,
+	crtn_dt timestamp NOT NULL
+);
+
+
+-- cncr_tbl_meta definition
+
+-- Drop table
+
+-- DROP TABLE cncr_tbl_meta;
+
+/*CREATE TABLE cncr_tbl_meta (
+	tbl_id varchar(20) NOT NULL,
+	tbl_lcls_cd varchar(20) NULL,
+	tbl_mcls_cd varchar(20) NULL,
+	eng_tbl_nm varchar(200) NULL,
+	kor_tbl_nm varchar(1000) NULL,
+	tbl_expl_cont varchar(4000) NULL,
+	yr_crit_eng_col_nm varchar(200) NULL,
+	crtn_dt timestamp NOT NULL
+);*/
+
+
+--ALTER TABLE CNCR_TBL_META ALTER COLUMN TBL_ID VARCHAR(20) NOT NULL;
+--ALTER TABLE CNCR_TBL_META ALTER COLUMN TBL_ID TYPE VARCHAR(20); 
+--ALTER TABLE CNCR_TBL_META ALTER COLUMN TBL_ID SET NOT NULL;
+
+ALTER TABLE CNCR_TBL_COL_DTRN_STATS ADD CONSTRAINT CNCR_TBL_COL_DTRN_STATS_PK PRIMARY KEY (HOSP_CD, TBL_ID, COL_ID) ;
+ALTER TABLE CNCR_TBL_CD_DTRN_STATS  ADD CONSTRAINT CNCR_TBL_CD_DTRN_STATS_PK  PRIMARY KEY (HOSP_CD, TBL_ID, COL_ID, CD_VL) ;
+ALTER TABLE CNCR_TBL_COL_YR_STATS   ADD CONSTRAINT CNCR_TBL_COL_YR_STATS_PK   PRIMARY KEY (HOSP_CD, TBL_ID, COL_ID, COL_SEQ, CRIT_YR) ;
+ALTER TABLE CNCR_TBL_CD_YR_STATS    ADD CONSTRAINT CNCR_TBL_CD_YR_STATS_PK    PRIMARY KEY (HOSP_CD, TBL_ID, COL_ID, CD_VL, COL_SEQ, CRIT_YR) ;
+--ALTER TABLE CANCER_TBL_STATS        ADD CONSTRAINT CANCER_TBL_STATS_PK        PRIMARY KEY (HOSP_CD, TBL_ID) ;
+--ALTER TABLE CNCR_TBL_META           ADD CONSTRAINT CNCR_TBL_META_PK           PRIMARY KEY (TBL_ID) ;
+--ALTER TABLE CNCR_TBL_COL_META       ADD CONSTRAINT CNCR_TBL_COL_META_PK       PRIMARY KEY (TBL_ID, COL_ID) ;
+ALTER TABLE CNCR_CODE_META          ADD CONSTRAINT CNCR_CODE_META_PK          PRIMARY KEY (HOSP_CD, CD_CLCD, CD_ID, CD_VL) ;
+
+
+CREATE TABLE CNCR_TBL_SMRY_STATS(			
+SMRY_STATS_NO 	VARCHAR(10)	NOT NULL	,
+HOSP_CD	VARCHAR(20)	NOT NULL	,
+CRIT_YR	VARCHAR(4)	NOT NULL	,
+SMRY_STATS_NM	VARCHAR(1000)	NOT NULL	,
+TBL_ID	VARCHAR(20)	NOT NULL	,
+COL_ID	VARCHAR(20	NOT NULL	,
+PT_AGE	DECIMAL(4,0)	NOT NULL	,
+PT_SEX_CD	VARCHAR(20)	NOT NULL	,
+STATS_TRGT_VL	NVARCHAR(4000)	NOT NULL	,
+NCS	DECIMAL(20,0)		,
+WHOL_NCS	DECIMAL(20,0)		,
+PT_CNT	DECIMAL(20,0)		,
+WHOL_PT_CNT	DECIMAL(20,0)		,
+STATS_WORK_YMD	VARCHAR(8)	NOT NULL	,
+COLL_STRT_YMD	VARCHAR(8)	NOT NULL	,
+COLL_END_YMD	VARCHAR(8)	NOT NULL	,
+CRTN_DT	TIMESTAMP	NOT NULL	
+);			
+ALTER TABLE CNCR_TBL_SMRY_STATS ADD CONSTRAINT	CNCR_TBL_SMRY_STATS_PK PRIMARY KEY	(SMRY_STATS_NO,HOSP_CD,CRIT_YR,PT_AGE,PT_SEX_CD,STATS_TRGT_VL)	;
+
