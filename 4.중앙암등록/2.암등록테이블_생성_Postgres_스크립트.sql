@@ -1,0 +1,123 @@
+-- cncr_rgst definition
+
+-- Drop table
+
+-- DROP TABLE cncr_rgst;
+
+CREATE TABLE cncr_rgst (
+	hcode varchar(20) NOT NULL, -- 병원번호
+	ptno varchar(15) NOT NULL, -- 환자등록번호
+	fdx varchar(8) NOT NULL, -- 초진연월일
+	cncr_rgst_seq numeric(3) NOT NULL, -- 암등록순번
+	brth varchar(6) NULL, -- 생년월
+	age varchar(3) NULL, -- 나이
+	sex varchar(20) NULL, -- 성별
+	popcode varchar(20) NULL, -- 모집단구분코드
+	popname varchar(50) NULL, -- 모집단구분명
+	frgcode varchar(20) NULL, -- 외국인코드
+	frgname varchar(50) NULL, -- 외국인명
+	hmlscode varchar(20) NULL, -- 행려환자
+	hmlsname varchar(50) NULL, -- 행려환자
+	jobcode varchar(20) NULL, -- 직업분류코드
+	jobname varchar(50) NULL, -- 직업분류명
+	job1 varchar(50) NULL, -- 직업분류기타
+	unknownjob varchar(50) NULL, -- 직업상세설명
+	visitpathcode varchar(20) NULL, -- 진단경로코드
+	visitpathname varchar(50) NULL, -- 진단경로명
+	visitpath_desc varchar(50) NULL, -- 진단경로5세부설명
+	tcode varchar(20) NULL, -- 원발부위코드
+	tcode1 varchar(200) NULL, -- 원발부위코드설명
+	tcode2 varchar(200) NULL, -- 원발부위코드기타설명
+	latercode varchar(20) NULL, -- 편측성코드
+	latername varchar(100) NULL, -- 편측성명
+	mcode varchar(20) NULL, -- 조직학적진단명코드
+	mcode1 varchar(200) NULL, -- 조직학적진단명코드설명
+	mcode2 varchar(200) NULL, -- 조직학적진단명코드기타설명
+	bunhwadocode varchar(20) NULL, -- 분화도코드
+	bunhwadoname varchar(50) NULL, -- 분화도명
+	expire varchar(8) NULL, -- 사망연월일
+	sain varchar(20) NULL, -- 사망원인
+	methodcode varchar(20) NULL, -- 진단방법코드
+	methodname varchar(100) NULL, -- 진단방법명
+	method2 varchar(50) NULL, -- 진단방법임상검사2세부사항
+	methodetc varchar(50) NULL, -- 진단방법임상검사2기타사항
+	txcheckcode varchar(20) NULL, -- 치료시행여부코드
+	txcheckname varchar(50) NULL, -- 치료시행여부명
+	tx varchar(5) NULL, -- 치료
+	txetc varchar(50) NULL, -- 기타치료
+	recoyear varchar(50) NULL, -- 출생연대표기
+	admisdate varchar(8) NULL, -- 입원일
+	disdate varchar(8) NULL, -- 퇴원일
+	dbyear varchar(4) NULL, -- 자료등록년도
+	inputday varchar(8) NULL, -- 입력일
+	seeryear varchar(4) NULL, -- SEERYEAR
+	seercode varchar(20) NULL, -- SEERCODE
+	seername varchar(100) NULL, -- SEERNAME
+	stagecode varchar(50) NULL, -- STAGE코드
+	stageyear varchar(4) NULL, -- STAGEYEAR
+	stagedesc varchar(50) NULL, -- 병기STAGE
+	metacode1 varchar(20) NULL, -- 원격전이코드1
+	metacode2 varchar(20) NULL, -- 원격전이코드2
+	metacode3 varchar(20) NULL, -- 원격전이코드3
+	crtn_dt timestamp NOT NULL, -- 생성일시
+	CONSTRAINT cncr_rgst_pk PRIMARY KEY (hcode, ptno, fdx, cncr_rgst_seq)
+);
+COMMENT ON TABLE cncr_rgst IS '암등록';
+
+-- Column comments
+
+COMMENT ON COLUMN cncr_rgst.hcode IS '병원번호';
+COMMENT ON COLUMN cncr_rgst.ptno IS '환자등록번호';
+COMMENT ON COLUMN cncr_rgst.fdx IS '초진연월일';
+COMMENT ON COLUMN cncr_rgst.cncr_rgst_seq IS '암등록순번';
+COMMENT ON COLUMN cncr_rgst.brth IS '생년월';
+COMMENT ON COLUMN cncr_rgst.age IS '나이';
+COMMENT ON COLUMN cncr_rgst.sex IS '성별';
+COMMENT ON COLUMN cncr_rgst.popcode IS '모집단구분코드';
+COMMENT ON COLUMN cncr_rgst.popname IS '모집단구분명';
+COMMENT ON COLUMN cncr_rgst.frgcode IS '외국인코드';
+COMMENT ON COLUMN cncr_rgst.frgname IS '외국인명';
+COMMENT ON COLUMN cncr_rgst.hmlscode IS '행려환자';
+COMMENT ON COLUMN cncr_rgst.hmlsname IS '행려환자';
+COMMENT ON COLUMN cncr_rgst.jobcode IS '직업분류코드';
+COMMENT ON COLUMN cncr_rgst.jobname IS '직업분류명';
+COMMENT ON COLUMN cncr_rgst.job1 IS '직업분류기타';
+COMMENT ON COLUMN cncr_rgst.unknownjob IS '직업상세설명';
+COMMENT ON COLUMN cncr_rgst.visitpathcode IS '진단경로코드';
+COMMENT ON COLUMN cncr_rgst.visitpathname IS '진단경로명';
+COMMENT ON COLUMN cncr_rgst.visitpath_desc IS '진단경로5세부설명';
+COMMENT ON COLUMN cncr_rgst.tcode IS '원발부위코드';
+COMMENT ON COLUMN cncr_rgst.tcode1 IS '원발부위코드설명';
+COMMENT ON COLUMN cncr_rgst.tcode2 IS '원발부위코드기타설명';
+COMMENT ON COLUMN cncr_rgst.latercode IS '편측성코드';
+COMMENT ON COLUMN cncr_rgst.latername IS '편측성명';
+COMMENT ON COLUMN cncr_rgst.mcode IS '조직학적진단명코드';
+COMMENT ON COLUMN cncr_rgst.mcode1 IS '조직학적진단명코드설명';
+COMMENT ON COLUMN cncr_rgst.mcode2 IS '조직학적진단명코드기타설명';
+COMMENT ON COLUMN cncr_rgst.bunhwadocode IS '분화도코드';
+COMMENT ON COLUMN cncr_rgst.bunhwadoname IS '분화도명';
+COMMENT ON COLUMN cncr_rgst.expire IS '사망연월일';
+COMMENT ON COLUMN cncr_rgst.sain IS '사망원인';
+COMMENT ON COLUMN cncr_rgst.methodcode IS '진단방법코드';
+COMMENT ON COLUMN cncr_rgst.methodname IS '진단방법명';
+COMMENT ON COLUMN cncr_rgst.method2 IS '진단방법임상검사2세부사항';
+COMMENT ON COLUMN cncr_rgst.methodetc IS '진단방법임상검사2기타사항';
+COMMENT ON COLUMN cncr_rgst.txcheckcode IS '치료시행여부코드';
+COMMENT ON COLUMN cncr_rgst.txcheckname IS '치료시행여부명';
+COMMENT ON COLUMN cncr_rgst.tx IS '치료';
+COMMENT ON COLUMN cncr_rgst.txetc IS '기타치료';
+COMMENT ON COLUMN cncr_rgst.recoyear IS '출생연대표기';
+COMMENT ON COLUMN cncr_rgst.admisdate IS '입원일';
+COMMENT ON COLUMN cncr_rgst.disdate IS '퇴원일';
+COMMENT ON COLUMN cncr_rgst.dbyear IS '자료등록년도';
+COMMENT ON COLUMN cncr_rgst.inputday IS '입력일';
+COMMENT ON COLUMN cncr_rgst.seeryear IS 'SEERYEAR';
+COMMENT ON COLUMN cncr_rgst.seercode IS 'SEERCODE';
+COMMENT ON COLUMN cncr_rgst.seername IS 'SEERNAME';
+COMMENT ON COLUMN cncr_rgst.stagecode IS 'STAGE코드';
+COMMENT ON COLUMN cncr_rgst.stageyear IS 'STAGEYEAR';
+COMMENT ON COLUMN cncr_rgst.stagedesc IS '병기STAGE';
+COMMENT ON COLUMN cncr_rgst.metacode1 IS '원격전이코드1';
+COMMENT ON COLUMN cncr_rgst.metacode2 IS '원격전이코드2';
+COMMENT ON COLUMN cncr_rgst.metacode3 IS '원격전이코드3';
+COMMENT ON COLUMN cncr_rgst.crtn_dt IS '생성일시';
