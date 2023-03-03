@@ -1,4 +1,5 @@
-# The goal is to build clinical data held by K-CURE participating medical institutions into an in-hospital clinical library through a standardization process.
+# 
+The goal is to build clinical data held by K-CURE participating medical institutions into an in-hospital clinical library through a standardization process.
 
 1.암임상라이브러리
   - 표준화된 암임상 스키마 정보
