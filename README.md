@@ -1,6 +1,8 @@
-# ClinicalLibrary
+# 임상라이브러리
 
-The goal is to build clinical data held by K-CURE participating medical institutions into an in-hospital clinical library through a standardization process.
+다 기관 연구 활성화를 위한 K-CURE 참여기관의 임상 데이터 표준화를 위한 항목정의서 및 DB 스키마에 대한 자료입니다. 
+
+  `22년도 구축 데이터 : 위암, 유방암, BaseLine DB
 
 1.암임상라이브러리
   - K-CURE 참여 의료기관이 보유한 EMR/CDW의 암 임상정보를 암 임상학회 검증 기반으로 항목 표준화된 암임상 DB 스키마 정보
