@@ -1,0 +1,1309 @@
+-- 1.대장암_환자_건강정보
+-- 대장암_환자_건강정보 테이블 생성 스크립트 
+
+-- DROP TABLE clcn_pt_hlinf;
+CREATE TABLE clcn_pt_hlinf (
+    hosp_cd varchar(20) NOT NULL , -- 병원코드
+    pt_sbst_no varchar(10) NOT NULL , -- 환자대체번호
+    adm_ymd varchar(8) NOT NULL , -- 입원일자
+    hlinf_seq numeric(3) NOT NULL , -- 건강정보순번
+    dsch_ymd varchar(8)  , -- 퇴원일자
+    cur_drnk_yn_noans_spcd varchar(20) NOT NULL , -- 현재음주여부무응답구분코드
+    cur_drnk_yn_noans_spnm varchar(50) NOT NULL , -- 현재음주여부무응답구분명
+    dhis_yn_noans_spcd varchar(20)  , -- 음주력여부무응답구분코드
+    dhis_yn_noans_spnm varchar(50)  , -- 음주력여부무응답구분명
+    drnk_strt_age_vl varchar(100)  , -- 음주시작연령값
+    drnk_kncd varchar(20)  , -- 음주종류코드
+    drnk_knnm varchar(200)  , -- 음주종류명
+    drnk_kind_etc_cont varchar(4000)  , -- 음주종류기타내용
+    drnk_qty varchar(100)  , -- 음주량
+    drnk_nt varchar(100)  , -- 음주횟수
+    drnk_dtrn_ycnt varchar(100)  , -- 음주기간년수
+    ndrk_strt_yr varchar(4)  , -- 금주시작년도
+    cur_smok_yn_noans_spcd varchar(20) NOT NULL , -- 현재흡연여부무응답구분코드
+    cur_smok_yn_noans_spnm varchar(50) NOT NULL , -- 현재흡연여부무응답구분명
+    shis_yn_noans_spcd varchar(20) NOT NULL , -- 흡연력여부무응답구분코드
+    shis_yn_noans_spnm varchar(50) NOT NULL , -- 흡연력여부무응답구분명
+    smok_strt_age_vl varchar(100)  , -- 흡연시작연령값
+    smok_dtrn_ycnt varchar(100)  , -- 흡연기간년수
+    smok_qty varchar(200)  , -- 흡연량
+    nsmk_strt_yr varchar(4)  , -- 금연시작년도
+    mhis_yn_noans_spcd varchar(20) NOT NULL , -- 병력여부무응답구분코드
+    mhis_yn_noans_spnm varchar(50) NOT NULL , -- 병력여부무응답구분명
+    mhis_hl_yn_noans_spcd varchar(20)  , -- 병력고지혈증여부무응답구분코드
+    mhis_hl_yn_noans_spnm varchar(50)  , -- 병력고지혈증여부무응답구분명
+    mhis_htn_yn_noans_spcd varchar(20) NOT NULL , -- 병력고혈압여부무응답구분코드
+    mhis_htn_yn_noans_spnm varchar(50) NOT NULL , -- 병력고혈압여부무응답구분명
+    mhis_dbt_yn_noans_spcd varchar(20) NOT NULL , -- 병력당뇨여부무응답구분코드
+    mhis_dbt_yn_noans_spnm varchar(50) NOT NULL , -- 병력당뇨여부무응답구분명
+    mhis_tb_yn_noans_spcd varchar(20) NOT NULL , -- 병력결핵여부무응답구분코드
+    mhis_tb_yn_noans_spnm varchar(50) NOT NULL , -- 병력결핵여부무응답구분명
+    mhis_lvds_yn_noans_spcd varchar(20) NOT NULL , -- 병력간질환여부무응답구분코드
+    mhis_lvds_yn_noans_spnm varchar(50) NOT NULL , -- 병력간질환여부무응답구분명
+    mhis_cncr_yn_noans_spcd varchar(20)  , -- 병력암여부무응답구분코드
+    mhis_cncr_yn_noans_spnm varchar(50)  , -- 병력암여부무응답구분명
+    mhis_cncr_kncd varchar(20)  , -- 병력암종류코드
+    mhis_cncr_knnm varchar(200)  , -- 병력암종류명
+    mhis_cncr_kind_etc_cont varchar(4000)  , -- 병력암종류기타내용
+    mhis_depr_yn_noans_spcd varchar(20)  , -- 병력우울증여부무응답구분코드
+    mhis_depr_yn_noans_spnm varchar(50)  , -- 병력우울증여부무응답구분명
+    mhis_insm_yn_noans_spcd varchar(20)  , -- 병력불면증여부무응답구분코드
+    mhis_insm_yn_noans_spnm varchar(50)  , -- 병력불면증여부무응답구분명
+    mhis_cads_yn_noans_spcd varchar(20)  , -- 병력심장질환여부무응답구분코드
+    mhis_cads_yn_noans_spnm varchar(50)  , -- 병력심장질환여부무응답구분명
+    mhis_clrc_diss_spcd varchar(20)  , -- 병력대장질환구분코드
+    mhis_clrc_diss_spnm varchar(200)  , -- 병력대장질환구분명
+	mhis_clrc_diss_clsf_etc_cont  varchar(4000) , --병력대장질환구분기타내용
+    mhis_absg_yn_noans_spcd varchar(20)  , -- 병력복부수술여부무응답구분코드
+    mhis_absg_yn_noans_spnm varchar(50)  , -- 병력복부수술여부무응답구분명
+    mhis_absg_cont varchar(4000)  , -- 병력복부수술내용
+    mhis_ht_diss_yn_noans_spcd varchar(20)  , -- 병력신장질환여부무응답구분코드
+    mhis_ht_diss_yn_noans_spnm varchar(50)  , -- 병력신장질환여부무응답구분명
+    etc_mhis_yn_noans_spcd varchar(20) NOT NULL , -- 기타병력여부무응답구분코드
+    etc_mhis_yn_noans_spnm varchar(50) NOT NULL , -- 기타병력여부무응답구분명
+    etc_mhis_diss_cont varchar(4000)  , -- 기타병력질환내용
+    main_sym_yn_noans_spcd varchar(20)  , -- 주증상여부무응답구분코드
+    main_sym_yn_noans_spnm varchar(50)  , -- 주증상여부무응답구분명
+    main_sym_cont varchar(4000)  , -- 주증상내용
+    ohad_hstr_yn_noans_spcd varchar(20)  , -- 타병원진단후전원여부무응답구분코드
+    ohad_hstr_yn_noans_spnm varchar(50)  , -- 타병원진단후전원여부무응답구분명
+    dsch_stcd varchar(20)  , -- 퇴원상태코드
+    dsch_stnm varchar(200)  , -- 퇴원상태명
+    crtn_dt timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP , -- 생성일시
+    CONSTRAINT clcn_pt_hlinf_pk PRIMARY KEY (hosp_cd, pt_sbst_no, adm_ymd, hlinf_seq)
+);
+
+-- 대장암_환자_건강정보 테이블 및 컬럼 코멘트 스크립트 
+COMMENT ON TABLE clcn_pt_hlinf IS '대장암_환자_건강정보';
+COMMENT ON COLUMN clcn_pt_hlinf.hosp_cd IS '병원코드' ;
+COMMENT ON COLUMN clcn_pt_hlinf.pt_sbst_no IS '환자대체번호' ;
+COMMENT ON COLUMN clcn_pt_hlinf.adm_ymd IS '입원일자' ;
+COMMENT ON COLUMN clcn_pt_hlinf.hlinf_seq IS '건강정보순번' ;
+COMMENT ON COLUMN clcn_pt_hlinf.dsch_ymd IS '퇴원일자' ;
+COMMENT ON COLUMN clcn_pt_hlinf.cur_drnk_yn_noans_spcd IS '현재음주여부무응답구분코드' ;
+COMMENT ON COLUMN clcn_pt_hlinf.cur_drnk_yn_noans_spnm IS '현재음주여부무응답구분명' ;
+COMMENT ON COLUMN clcn_pt_hlinf.dhis_yn_noans_spcd IS '음주력여부무응답구분코드' ;
+COMMENT ON COLUMN clcn_pt_hlinf.dhis_yn_noans_spnm IS '음주력여부무응답구분명' ;
+COMMENT ON COLUMN clcn_pt_hlinf.drnk_strt_age_vl IS '음주시작연령값' ;
+COMMENT ON COLUMN clcn_pt_hlinf.drnk_kncd IS '음주종류코드' ;
+COMMENT ON COLUMN clcn_pt_hlinf.drnk_knnm IS '음주종류명' ;
+COMMENT ON COLUMN clcn_pt_hlinf.drnk_kind_etc_cont IS '음주종류기타내용' ;
+COMMENT ON COLUMN clcn_pt_hlinf.drnk_qty IS '음주량' ;
+COMMENT ON COLUMN clcn_pt_hlinf.drnk_nt IS '음주횟수' ;
+COMMENT ON COLUMN clcn_pt_hlinf.drnk_dtrn_ycnt IS '음주기간년수' ;
+COMMENT ON COLUMN clcn_pt_hlinf.ndrk_strt_yr IS '금주시작년도' ;
+COMMENT ON COLUMN clcn_pt_hlinf.cur_smok_yn_noans_spcd IS '현재흡연여부무응답구분코드' ;
+COMMENT ON COLUMN clcn_pt_hlinf.cur_smok_yn_noans_spnm IS '현재흡연여부무응답구분명' ;
+COMMENT ON COLUMN clcn_pt_hlinf.shis_yn_noans_spcd IS '흡연력여부무응답구분코드' ;
+COMMENT ON COLUMN clcn_pt_hlinf.shis_yn_noans_spnm IS '흡연력여부무응답구분명' ;
+COMMENT ON COLUMN clcn_pt_hlinf.smok_strt_age_vl IS '흡연시작연령값' ;
+COMMENT ON COLUMN clcn_pt_hlinf.smok_dtrn_ycnt IS '흡연기간년수' ;
+COMMENT ON COLUMN clcn_pt_hlinf.smok_qty IS '흡연량' ;
+COMMENT ON COLUMN clcn_pt_hlinf.nsmk_strt_yr IS '금연시작년도' ;
+COMMENT ON COLUMN clcn_pt_hlinf.mhis_yn_noans_spcd IS '병력여부무응답구분코드' ;
+COMMENT ON COLUMN clcn_pt_hlinf.mhis_yn_noans_spnm IS '병력여부무응답구분명' ;
+COMMENT ON COLUMN clcn_pt_hlinf.mhis_hl_yn_noans_spcd IS '병력고지혈증여부무응답구분코드' ;
+COMMENT ON COLUMN clcn_pt_hlinf.mhis_hl_yn_noans_spnm IS '병력고지혈증여부무응답구분명' ;
+COMMENT ON COLUMN clcn_pt_hlinf.mhis_htn_yn_noans_spcd IS '병력고혈압여부무응답구분코드' ;
+COMMENT ON COLUMN clcn_pt_hlinf.mhis_htn_yn_noans_spnm IS '병력고혈압여부무응답구분명' ;
+COMMENT ON COLUMN clcn_pt_hlinf.mhis_dbt_yn_noans_spcd IS '병력당뇨여부무응답구분코드' ;
+COMMENT ON COLUMN clcn_pt_hlinf.mhis_dbt_yn_noans_spnm IS '병력당뇨여부무응답구분명' ;
+COMMENT ON COLUMN clcn_pt_hlinf.mhis_tb_yn_noans_spcd IS '병력결핵여부무응답구분코드' ;
+COMMENT ON COLUMN clcn_pt_hlinf.mhis_tb_yn_noans_spnm IS '병력결핵여부무응답구분명' ;
+COMMENT ON COLUMN clcn_pt_hlinf.mhis_lvds_yn_noans_spcd IS '병력간질환여부무응답구분코드' ;
+COMMENT ON COLUMN clcn_pt_hlinf.mhis_lvds_yn_noans_spnm IS '병력간질환여부무응답구분명' ;
+COMMENT ON COLUMN clcn_pt_hlinf.mhis_cncr_yn_noans_spcd IS '병력암여부무응답구분코드' ;
+COMMENT ON COLUMN clcn_pt_hlinf.mhis_cncr_yn_noans_spnm IS '병력암여부무응답구분명' ;
+COMMENT ON COLUMN clcn_pt_hlinf.mhis_cncr_kncd IS '병력암종류코드' ;
+COMMENT ON COLUMN clcn_pt_hlinf.mhis_cncr_knnm IS '병력암종류명' ;
+COMMENT ON COLUMN clcn_pt_hlinf.mhis_cncr_kind_etc_cont IS '병력암종류기타내용' ;
+COMMENT ON COLUMN clcn_pt_hlinf.mhis_depr_yn_noans_spcd IS '병력우울증여부무응답구분코드' ;
+COMMENT ON COLUMN clcn_pt_hlinf.mhis_depr_yn_noans_spnm IS '병력우울증여부무응답구분명' ;
+COMMENT ON COLUMN clcn_pt_hlinf.mhis_insm_yn_noans_spcd IS '병력불면증여부무응답구분코드' ;
+COMMENT ON COLUMN clcn_pt_hlinf.mhis_insm_yn_noans_spnm IS '병력불면증여부무응답구분명' ;
+COMMENT ON COLUMN clcn_pt_hlinf.mhis_cads_yn_noans_spcd IS '병력심장질환여부무응답구분코드' ;
+COMMENT ON COLUMN clcn_pt_hlinf.mhis_cads_yn_noans_spnm IS '병력심장질환여부무응답구분명' ;
+COMMENT ON COLUMN clcn_pt_hlinf.mhis_clrc_diss_spcd IS '병력대장질환구분코드' ;
+COMMENT ON COLUMN clcn_pt_hlinf.mhis_clrc_diss_spnm IS '병력대장질환구분명' ;
+COMMENT ON COLUMN clcn_pt_hlinf.mhis_clrc_diss_clsf_etc_cont IS '병력대장질환구분기타내용' ;
+COMMENT ON COLUMN clcn_pt_hlinf.mhis_absg_yn_noans_spcd IS '병력복부수술여부무응답구분코드' ;
+COMMENT ON COLUMN clcn_pt_hlinf.mhis_absg_yn_noans_spnm IS '병력복부수술여부무응답구분명' ;
+COMMENT ON COLUMN clcn_pt_hlinf.mhis_absg_cont IS '병력복부수술내용' ;
+COMMENT ON COLUMN clcn_pt_hlinf.mhis_ht_diss_yn_noans_spcd IS '병력신장질환여부무응답구분코드' ;
+COMMENT ON COLUMN clcn_pt_hlinf.mhis_ht_diss_yn_noans_spnm IS '병력신장질환여부무응답구분명' ;
+COMMENT ON COLUMN clcn_pt_hlinf.etc_mhis_yn_noans_spcd IS '기타병력여부무응답구분코드' ;
+COMMENT ON COLUMN clcn_pt_hlinf.etc_mhis_yn_noans_spnm IS '기타병력여부무응답구분명' ;
+COMMENT ON COLUMN clcn_pt_hlinf.etc_mhis_diss_cont IS '기타병력질환내용' ;
+COMMENT ON COLUMN clcn_pt_hlinf.main_sym_yn_noans_spcd IS '주증상여부무응답구분코드' ;
+COMMENT ON COLUMN clcn_pt_hlinf.main_sym_yn_noans_spnm IS '주증상여부무응답구분명' ;
+COMMENT ON COLUMN clcn_pt_hlinf.main_sym_cont IS '주증상내용' ;
+COMMENT ON COLUMN clcn_pt_hlinf.ohad_hstr_yn_noans_spcd IS '타병원진단후전원여부무응답구분코드' ;
+COMMENT ON COLUMN clcn_pt_hlinf.ohad_hstr_yn_noans_spnm IS '타병원진단후전원여부무응답구분명' ;
+COMMENT ON COLUMN clcn_pt_hlinf.dsch_stcd IS '퇴원상태코드' ;
+COMMENT ON COLUMN clcn_pt_hlinf.dsch_stnm IS '퇴원상태명' ;
+COMMENT ON COLUMN clcn_pt_hlinf.crtn_dt IS '생성일시' ;
+
+
+-- 2.대장암_환자_가족력
+-- 대장암_환자_가족력 테이블 생성 스크립트 
+
+-- DROP TABLE clcn_pt_fmht;
+CREATE TABLE clcn_pt_fmht (
+    hosp_cd varchar(20) NOT NULL , -- 병원코드
+    pt_sbst_no varchar(10) NOT NULL , -- 환자대체번호
+    fmht_rcrd_ymd varchar(8) NOT NULL , -- 가족력기록일자
+    fmht_rcrd_seq numeric(3) NOT NULL , -- 가족력기록순번
+    fmht_yn_noans_spcd varchar(20) NOT NULL , -- 가족력여부무응답구분코드
+    fmht_yn_noans_spnm varchar(50) NOT NULL , -- 가족력여부무응답구분명
+    pt_fm_rlcd varchar(20)  , -- 환자가족관계코드
+    pt_fm_rlnm varchar(200)  , -- 환자가족관계명
+    pt_fmrl_etc_cont varchar(4000)  , -- 환자가족관계기타내용
+    fmhs_htn_yn_noans_spcd varchar(20)  , -- 가족병력고혈압여부무응답구분코드
+    fmhs_htn_yn_noans_spnm varchar(50)  , -- 가족병력고혈압여부무응답구분명
+    fmhs_dbt_yn_noans_spcd varchar(20)  , -- 가족병력당뇨여부무응답구분코드
+    fmhs_dbt_yn_noans_spnm varchar(50)  , -- 가족병력당뇨여부무응답구분명
+    fmht_tb_yn_noans_spcd varchar(20)  , -- 가족력결핵여부무응답구분코드
+    fmht_tb_yn_noans_spnm varchar(50)  , -- 가족력결핵여부무응답구분명
+    fmhs_lvds_yn_noans_spcd varchar(20)  , -- 가족병력간질환여부무응답구분코드
+    fmhs_lvds_yn_noans_spnm varchar(50)  , -- 가족병력간질환여부무응답구분명
+    fmhs_cncr_yn_noans_spcd varchar(20)  , -- 가족병력암여부무응답구분코드
+    fmhs_cncr_yn_noans_spnm varchar(50)  , -- 가족병력암여부무응답구분명
+    fmht_cncr_kncd varchar(20)  , -- 가족력암종류코드
+    fmht_cncr_knnm varchar(200)  , -- 가족력암종류명
+    fmht_cncr_kind_etc_cont varchar(4000)  , -- 가족력암종류기타내용
+    fmht_here_clcn_spcd varchar(20)  , -- 가족력유전성대장암구분코드
+    fmht_here_clcn_spnm varchar(200)  , -- 가족력유전성대장암구분명
+	fmht_here_clcn_clsf_etc_cont varchar(4000)  ,-- 가족력유전성대장암구분기타내용
+    fmhs_etc_yn_noans_spcd varchar(20)  , -- 가족병력기타여부무응답구분코드
+    fmhs_etc_yn_noans_spnm varchar(50)  , -- 가족병력기타여부무응답구분명
+    fmhs_etc_cont varchar(4000)  , -- 가족병력기타내용
+    crtn_dt timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP , -- 생성일시
+    CONSTRAINT clcn_pt_fmht_pk PRIMARY KEY (hosp_cd, pt_sbst_no, fmht_rcrd_ymd, fmht_rcrd_seq)
+);
+
+-- 대장암_환자_가족력 테이블 및 컬럼 코멘트 스크립트 
+COMMENT ON TABLE clcn_pt_fmht IS '대장암_환자_가족력';
+COMMENT ON COLUMN clcn_pt_fmht.hosp_cd IS '병원코드' ;
+COMMENT ON COLUMN clcn_pt_fmht.pt_sbst_no IS '환자대체번호' ;
+COMMENT ON COLUMN clcn_pt_fmht.fmht_rcrd_ymd IS '가족력기록일자' ;
+COMMENT ON COLUMN clcn_pt_fmht.fmht_rcrd_seq IS '가족력기록순번' ;
+COMMENT ON COLUMN clcn_pt_fmht.fmht_yn_noans_spcd IS '가족력여부무응답구분코드' ;
+COMMENT ON COLUMN clcn_pt_fmht.fmht_yn_noans_spnm IS '가족력여부무응답구분명' ;
+COMMENT ON COLUMN clcn_pt_fmht.pt_fm_rlcd IS '환자가족관계코드' ;
+COMMENT ON COLUMN clcn_pt_fmht.pt_fm_rlnm IS '환자가족관계명' ;
+COMMENT ON COLUMN clcn_pt_fmht.pt_fmrl_etc_cont IS '환자가족관계기타내용' ;
+COMMENT ON COLUMN clcn_pt_fmht.fmhs_htn_yn_noans_spcd IS '가족병력고혈압여부무응답구분코드' ;
+COMMENT ON COLUMN clcn_pt_fmht.fmhs_htn_yn_noans_spnm IS '가족병력고혈압여부무응답구분명' ;
+COMMENT ON COLUMN clcn_pt_fmht.fmhs_dbt_yn_noans_spcd IS '가족병력당뇨여부무응답구분코드' ;
+COMMENT ON COLUMN clcn_pt_fmht.fmhs_dbt_yn_noans_spnm IS '가족병력당뇨여부무응답구분명' ;
+COMMENT ON COLUMN clcn_pt_fmht.fmht_tb_yn_noans_spcd IS '가족력결핵여부무응답구분코드' ;
+COMMENT ON COLUMN clcn_pt_fmht.fmht_tb_yn_noans_spnm IS '가족력결핵여부무응답구분명' ;
+COMMENT ON COLUMN clcn_pt_fmht.fmhs_lvds_yn_noans_spcd IS '가족병력간질환여부무응답구분코드' ;
+COMMENT ON COLUMN clcn_pt_fmht.fmhs_lvds_yn_noans_spnm IS '가족병력간질환여부무응답구분명' ;
+COMMENT ON COLUMN clcn_pt_fmht.fmhs_cncr_yn_noans_spcd IS '가족병력암여부무응답구분코드' ;
+COMMENT ON COLUMN clcn_pt_fmht.fmhs_cncr_yn_noans_spnm IS '가족병력암여부무응답구분명' ;
+COMMENT ON COLUMN clcn_pt_fmht.fmht_cncr_kncd IS '가족력암종류코드' ;
+COMMENT ON COLUMN clcn_pt_fmht.fmht_cncr_knnm IS '가족력암종류명' ;
+COMMENT ON COLUMN clcn_pt_fmht.fmht_cncr_kind_etc_cont IS '가족력암종류기타내용' ;
+COMMENT ON COLUMN clcn_pt_fmht.fmht_here_clcn_spcd IS '가족력유전성대장암구분코드' ;
+COMMENT ON COLUMN clcn_pt_fmht.fmht_here_clcn_spnm IS '가족력유전성대장암구분명' ;
+COMMENT ON COLUMN clcn_pt_fmht.fmht_here_clcn_clsf_etc_cont IS '가족력유전성대장암구분기타내용' ;
+COMMENT ON COLUMN clcn_pt_fmht.fmhs_etc_yn_noans_spcd IS '가족병력기타여부무응답구분코드' ;
+COMMENT ON COLUMN clcn_pt_fmht.fmhs_etc_yn_noans_spnm IS '가족병력기타여부무응답구분명' ;
+COMMENT ON COLUMN clcn_pt_fmht.fmhs_etc_cont IS '가족병력기타내용' ;
+COMMENT ON COLUMN clcn_pt_fmht.crtn_dt IS '생성일시' ;
+
+
+-- 3.대장암_진단_신체계측정보
+-- 대장암_진단_신체계측정보 테이블 생성 스크립트 
+
+-- DROP TABLE clcn_diag_aninf;
+CREATE TABLE clcn_diag_aninf (
+    hosp_cd varchar(20) NOT NULL , -- 병원코드
+    pt_sbst_no varchar(10) NOT NULL , -- 환자대체번호
+    anth_rcrd_ymd varchar(8) NOT NULL , -- 신체계측기록일자
+    anth_rcrd_seq numeric(3) NOT NULL , -- 신체계측기록순번
+    ht_msrm_vl numeric(10,3)  , -- 신장측정값
+    wt_msrm_vl numeric(10,3)  , -- 체중측정값
+    bmi_vl numeric(10,3)  , -- BMI값
+    rlxt_blpr_vl varchar(200)  , -- 이완혈압값
+    ctrt_blpr_vl varchar(200)  , -- 수축혈압값
+    ecog_cd varchar(20)  , -- ECOG코드
+    ecog_nm varchar(200)  , -- ECOG명
+    crtn_dt timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP , -- 생성일시
+    CONSTRAINT clcn_diag_aninf_pk PRIMARY KEY (hosp_cd, pt_sbst_no, anth_rcrd_ymd, anth_rcrd_seq)
+);
+
+-- 대장암_진단_신체계측정보 테이블 및 컬럼 코멘트 스크립트 
+COMMENT ON TABLE clcn_diag_aninf IS '대장암_진단_신체계측정보';
+COMMENT ON COLUMN clcn_diag_aninf.hosp_cd IS '병원코드' ;
+COMMENT ON COLUMN clcn_diag_aninf.pt_sbst_no IS '환자대체번호' ;
+COMMENT ON COLUMN clcn_diag_aninf.anth_rcrd_ymd IS '신체계측기록일자' ;
+COMMENT ON COLUMN clcn_diag_aninf.anth_rcrd_seq IS '신체계측기록순번' ;
+COMMENT ON COLUMN clcn_diag_aninf.ht_msrm_vl IS '신장측정값' ;
+COMMENT ON COLUMN clcn_diag_aninf.wt_msrm_vl IS '체중측정값' ;
+COMMENT ON COLUMN clcn_diag_aninf.bmi_vl IS 'BMI값' ;
+COMMENT ON COLUMN clcn_diag_aninf.rlxt_blpr_vl IS '이완혈압값' ;
+COMMENT ON COLUMN clcn_diag_aninf.ctrt_blpr_vl IS '수축혈압값' ;
+COMMENT ON COLUMN clcn_diag_aninf.ecog_cd IS 'ECOG코드' ;
+COMMENT ON COLUMN clcn_diag_aninf.ecog_nm IS 'ECOG명' ;
+COMMENT ON COLUMN clcn_diag_aninf.crtn_dt IS '생성일시' ;
+
+
+-- 4.대장암_진단_정보
+-- 대장암_진단_정보 테이블 생성 스크립트 
+
+-- DROP TABLE clcn_diag_inf;
+CREATE TABLE clcn_diag_inf (
+    hosp_cd varchar(20) NOT NULL , -- 병원코드
+    pt_sbst_no varchar(10) NOT NULL , -- 환자대체번호
+    diag_rgst_ymd varchar(8) NOT NULL , -- 진단등록일자
+    diag_rgst_seq numeric(3) NOT NULL , -- 진단등록순번
+    clcn_diag_kncd varchar(20) NOT NULL , -- 대장암진단종류코드
+    clcn_diag_knnm varchar(200) NOT NULL , -- 대장암진단종류명
+    diag_cd varchar(20) NOT NULL , -- 진단코드
+    diag_nm varchar(300) NOT NULL , -- 진단명
+    diag_kcd_cd varchar(20)  , -- 진단KCD코드
+    diag_kcd_nm varchar(200)  , -- 진단KCD명
+    diag_smct_cd varchar(200)  , -- 진단SNOMEDCT코드
+    diag_smct_nm varchar(1000)  , -- 진단SNOMEDCT명
+    crtn_dt timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP , -- 생성일시
+    CONSTRAINT clcn_diag_inf_pk PRIMARY KEY (hosp_cd, pt_sbst_no, diag_rgst_ymd, diag_rgst_seq)
+);
+
+-- 대장암_진단_정보 테이블 및 컬럼 코멘트 스크립트 
+COMMENT ON TABLE clcn_diag_inf IS '대장암_진단_정보';
+COMMENT ON COLUMN clcn_diag_inf.hosp_cd IS '병원코드' ;
+COMMENT ON COLUMN clcn_diag_inf.pt_sbst_no IS '환자대체번호' ;
+COMMENT ON COLUMN clcn_diag_inf.diag_rgst_ymd IS '진단등록일자' ;
+COMMENT ON COLUMN clcn_diag_inf.diag_rgst_seq IS '진단등록순번' ;
+COMMENT ON COLUMN clcn_diag_inf.clcn_diag_kncd IS '대장암진단종류코드' ;
+COMMENT ON COLUMN clcn_diag_inf.clcn_diag_knnm IS '대장암진단종류명' ;
+COMMENT ON COLUMN clcn_diag_inf.diag_cd IS '진단코드' ;
+COMMENT ON COLUMN clcn_diag_inf.diag_nm IS '진단명' ;
+COMMENT ON COLUMN clcn_diag_inf.diag_kcd_cd IS '진단KCD코드' ;
+COMMENT ON COLUMN clcn_diag_inf.diag_kcd_nm IS '진단KCD명' ;
+COMMENT ON COLUMN clcn_diag_inf.diag_smct_cd IS '진단SNOMEDCT코드' ;
+COMMENT ON COLUMN clcn_diag_inf.diag_smct_nm IS '진단SNOMEDCT명' ;
+COMMENT ON COLUMN clcn_diag_inf.crtn_dt IS '생성일시' ;
+
+
+-- 5.대장암_진단_병기
+-- 대장암_진단_병기 테이블 생성 스크립트 
+
+-- DROP TABLE clcn_diag_stag;
+CREATE TABLE clcn_diag_stag (
+    hosp_cd varchar(20) NOT NULL , -- 병원코드
+    pt_sbst_no varchar(10) NOT NULL , -- 환자대체번호
+    diag_stag_rcrd_ymd varchar(8) NOT NULL , -- 진단병기기록일자
+    diag_stag_rcrd_seq numeric(3) NOT NULL , -- 진단병기기록순번
+    clnc_tumr_prty_cd varchar(20)  , -- 임상종양특성코드
+    clnc_tumr_prty_nm varchar(200)  , -- 임상종양특성명
+    ajcc_yr varchar(4)  , -- AJCC년도
+    clnc_tnm_stag_vl varchar(200)  , -- 임상TNM병기값
+    clnc_t_stag_vl varchar(200)  , -- 임상T병기값
+    clnc_n_stag_vl varchar(200)  , -- 임상N병기값
+    clnc_m_stag_vl varchar(200)  , -- 임상M병기값
+    rtcn_loca_dst_vl numeric(10,3)  , -- 직장암위치거리값
+    crtn_dt timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP , -- 생성일시
+    CONSTRAINT clcn_diag_stag_pk PRIMARY KEY (hosp_cd, pt_sbst_no, diag_stag_rcrd_ymd, diag_stag_rcrd_seq)
+);
+
+-- 대장암_진단_병기 테이블 및 컬럼 코멘트 스크립트 
+COMMENT ON TABLE clcn_diag_stag IS '대장암_진단_병기';
+COMMENT ON COLUMN clcn_diag_stag.hosp_cd IS '병원코드' ;
+COMMENT ON COLUMN clcn_diag_stag.pt_sbst_no IS '환자대체번호' ;
+COMMENT ON COLUMN clcn_diag_stag.diag_stag_rcrd_ymd IS '진단병기기록일자' ;
+COMMENT ON COLUMN clcn_diag_stag.diag_stag_rcrd_seq IS '진단병기기록순번' ;
+COMMENT ON COLUMN clcn_diag_stag.clnc_tumr_prty_cd IS '임상종양특성코드' ;
+COMMENT ON COLUMN clcn_diag_stag.clnc_tumr_prty_nm IS '임상종양특성명' ;
+COMMENT ON COLUMN clcn_diag_stag.ajcc_yr IS 'AJCC년도' ;
+COMMENT ON COLUMN clcn_diag_stag.clnc_tnm_stag_vl IS '임상TNM병기값' ;
+COMMENT ON COLUMN clcn_diag_stag.clnc_t_stag_vl IS '임상T병기값' ;
+COMMENT ON COLUMN clcn_diag_stag.clnc_n_stag_vl IS '임상N병기값' ;
+COMMENT ON COLUMN clcn_diag_stag.clnc_m_stag_vl IS '임상M병기값' ;
+COMMENT ON COLUMN clcn_diag_stag.rtcn_loca_dst_vl IS '직장암위치거리값' ;
+COMMENT ON COLUMN clcn_diag_stag.crtn_dt IS '생성일시' ;
+
+
+-- 6.대장암_진단_전이
+-- 대장암_진단_전이 테이블 생성 스크립트 
+
+-- DROP TABLE clcn_diag_mtst;
+CREATE TABLE clcn_diag_mtst (
+    hosp_cd varchar(20) NOT NULL , -- 병원코드
+    pt_sbst_no varchar(10) NOT NULL , -- 환자대체번호
+    mtdg_ymd varchar(8) NOT NULL , -- 전이진단일자
+    mtdg_seq numeric(3) NOT NULL , -- 전이진단순번
+    mtdg_mtcd varchar(20)  , -- 전이진단방법코드
+    mtdg_mtnm varchar(200)  , -- 전이진단방법명
+    mtst_site_cd varchar(20)  , -- 전이부위코드
+    mtst_site_nm varchar(200)  , -- 전이부위명
+    mtst_site_etc_cont varchar(4000)  , -- 전이부위기타내용
+    mtst_aspt_cd varchar(20)  , -- 전이양상코드
+    mtst_aspt_nm varchar(200)  , -- 전이양상명
+    mtst_trtm_cont varchar(4000)  , -- 전이치료내용
+    crtn_dt timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP , -- 생성일시
+    CONSTRAINT clcn_diag_mtst_pk PRIMARY KEY (hosp_cd, pt_sbst_no, mtdg_ymd, mtdg_seq)
+);
+
+-- 대장암_진단_전이 테이블 및 컬럼 코멘트 스크립트 
+COMMENT ON TABLE clcn_diag_mtst IS '대장암_진단_전이';
+COMMENT ON COLUMN clcn_diag_mtst.hosp_cd IS '병원코드' ;
+COMMENT ON COLUMN clcn_diag_mtst.pt_sbst_no IS '환자대체번호' ;
+COMMENT ON COLUMN clcn_diag_mtst.mtdg_ymd IS '전이진단일자' ;
+COMMENT ON COLUMN clcn_diag_mtst.mtdg_seq IS '전이진단순번' ;
+COMMENT ON COLUMN clcn_diag_mtst.mtdg_mtcd IS '전이진단방법코드' ;
+COMMENT ON COLUMN clcn_diag_mtst.mtdg_mtnm IS '전이진단방법명' ;
+COMMENT ON COLUMN clcn_diag_mtst.mtst_site_cd IS '전이부위코드' ;
+COMMENT ON COLUMN clcn_diag_mtst.mtst_site_nm IS '전이부위명' ;
+COMMENT ON COLUMN clcn_diag_mtst.mtst_site_etc_cont IS '전이부위기타내용' ;
+COMMENT ON COLUMN clcn_diag_mtst.mtst_aspt_cd IS '전이양상코드' ;
+COMMENT ON COLUMN clcn_diag_mtst.mtst_aspt_nm IS '전이양상명' ;
+COMMENT ON COLUMN clcn_diag_mtst.mtst_trtm_cont IS '전이치료내용' ;
+COMMENT ON COLUMN clcn_diag_mtst.crtn_dt IS '생성일시' ;
+
+
+
+-- 7. 대장암_검사_진단
+-- 대장암_검사_진단 테이블 생성 스크립트 
+
+-- DROP TABLE clcn_exam_diag;
+
+CREATE TABLE clcn_exam_diag (
+	hosp_cd varchar(20) NOT NULL , -- 병원코드
+	pt_sbst_no varchar(10) NOT NULL , -- 환자대체번호
+	cexm_ymd varchar(8) NOT NULL , -- 진단검사일자
+	cexm_seq numeric(3) NOT NULL , -- 진단검사순번
+	cexm_kncd varchar(20) NOT NULL , -- 진단검사종류코드
+	cexm_knnm varchar(200) NOT NULL , -- 진단검사종류명
+	cexm_cd varchar(20) NOT NULL , -- 진단검사코드
+	cexm_nm varchar(200) NOT NULL , -- 진단검사명
+	cexm_edi_cd varchar(20)  , -- 진단검사EDI코드
+	cexm_edi_nm varchar(200)  , -- 진단검사EDI명
+	cexm_smct_cd varchar(200)  , -- 진단검사SNOMEDCT코드
+	cexm_smct_nm varchar(1000)  , -- 진단검사SNOMEDCT명
+	cexm_loinc_cd varchar(20)  , -- 진단검사LOINC코드
+	cexm_loinc_nm varchar(1000)  , -- 진단검사LOINC명
+	cexm_rslt_cont varchar(4000) NOT NULL , -- 진단검사결과내용
+	cexm_rslt_unit_cont varchar(4000)  , -- 진단검사결과단위내용
+	cexm_nlrg_ref_vl varchar(200)  , -- 진단검사정상범위참고값
+crtn_dt timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP , -- 생성일시
+	CONSTRAINT clcn_exam_diag_pk PRIMARY KEY (hosp_cd, pt_sbst_no, cexm_ymd, cexm_seq)
+);
+COMMENT ON TABLE clcn_exam_diag IS '대장암_검사_진단';
+
+-- Column comments
+COMMENT ON COLUMN clcn_exam_diag.hosp_cd IS '병원코드' ;
+COMMENT ON COLUMN clcn_exam_diag.pt_sbst_no IS '환자대체번호' ;
+COMMENT ON COLUMN clcn_exam_diag.cexm_ymd IS '진단검사일자' ;
+COMMENT ON COLUMN clcn_exam_diag.cexm_seq IS '진단검사순번' ;
+COMMENT ON COLUMN clcn_exam_diag.cexm_kncd IS '진단검사종류코드' ;
+COMMENT ON COLUMN clcn_exam_diag.cexm_knnm IS '진단검사종류명' ;
+COMMENT ON COLUMN clcn_exam_diag.cexm_cd IS '진단검사코드' ;
+COMMENT ON COLUMN clcn_exam_diag.cexm_nm IS '진단검사명' ;
+COMMENT ON COLUMN clcn_exam_diag.cexm_edi_cd IS '진단검사EDI코드' ;
+COMMENT ON COLUMN clcn_exam_diag.cexm_edi_nm IS '진단검사EDI명' ;
+COMMENT ON COLUMN clcn_exam_diag.cexm_smct_cd IS '진단검사SNOMEDCT코드' ;
+COMMENT ON COLUMN clcn_exam_diag.cexm_smct_nm IS '진단검사SNOMEDCT명' ;
+COMMENT ON COLUMN clcn_exam_diag.cexm_loinc_cd IS '진단검사LOINC코드' ;
+COMMENT ON COLUMN clcn_exam_diag.cexm_loinc_nm IS '진단검사LOINC명' ;
+COMMENT ON COLUMN clcn_exam_diag.cexm_rslt_cont IS '진단검사결과내용' ;
+COMMENT ON COLUMN clcn_exam_diag.cexm_rslt_unit_cont IS '진단검사결과단위내용' ;
+COMMENT ON COLUMN clcn_exam_diag.cexm_nlrg_ref_vl IS '진단검사정상범위참고값' ;
+COMMENT ON COLUMN clcn_exam_diag.crtn_dt IS '생성일시' ;
+
+
+-- 8.대장암_검사_영상
+-- 대장암_검사_영상 테이블 생성 스크립트 
+
+-- DROP TABLE clcn_exam_imag;
+
+CREATE TABLE clcn_exam_imag (
+	hosp_cd varchar(20) NOT NULL , -- 병원코드
+	pt_sbst_no varchar(10) NOT NULL , -- 환자대체번호
+	imex_ymd varchar(8) NOT NULL , -- 영상검사일자
+	imex_seq numeric(3) NOT NULL , -- 영상검사순번
+	imex_kncd varchar(20) NOT NULL , -- 영상검사종류코드
+	imex_knnm varchar(200) NOT NULL , -- 영상검사종류명
+	imex_cd varchar(20) NOT NULL , -- 영상검사코드
+	imex_nm varchar(200) NOT NULL , -- 영상검사명
+	imex_edi_cd varchar(20)  , -- 영상검사EDI코드
+	imex_edi_nm varchar(300)  , -- 영상검사EDI명
+	imex_smct_cd varchar(200)  , -- 영상검사SNOMEDCT코드
+	imex_smct_nm varchar(1000)  , -- 영상검사SNOMEDCT명
+	t4b_inva_orgn_spcd varchar(20)  , -- T4B침윤장기구분코드
+	t4b_inva_orgn_spnm varchar(200)  , -- T4B침윤장기구분명
+    t4b_inva_orgn_clsf_etc_cont varchar(4000) , --T4B침윤장기구분기타내용
+	frnt_prtm_tumr_rlcd varchar(20)  , -- 전방복막종양관계코드
+	frnt_prtm_tumr_rlnm varchar(200)  , -- 전방복막종양관계명
+    frnt_prtm_tumr_rltn_etc_cont varchar(4000) , --전방복막종양관계기타내용	
+	tumr_msfc_shrt_dst_vl numeric(10,3)  , -- 종양직장간근막최단거리값
+	tumr_rspn_grcd varchar(20)  , -- 종양반응등급코드
+	tumr_rspn_grnm varchar(200)  , -- 종양반응등급명
+	tumr_emvi_ex_yn_spcd varchar(20)  , -- 종양장벽외혈관침윤존재여부구분코드
+	tumr_emvi_ex_yn_spnm varchar(200)  , -- 종양장벽외혈관침윤존재여부구분명
+	tumr_msrt_ln_mtst_ex_yn_spcd varchar(20)  , -- 종양직장간내림프절전이존재여부구분코드
+	tumr_msrt_ln_mtst_ex_yn_spnm varchar(200)  , -- 종양직장간내림프절전이존재여부구분명
+	tumr_exms_ln_mtst_ex_yn_spcd varchar(20)  , -- 종양직장간외림프절전이존재여부구분코드
+	tumr_exms_ln_mtst_ex_yn_spnm varchar(200)  , -- 종양직장간외림프절전이존재여부구분명
+	lstm_anvg_dst_vl numeric(10,3)  , -- 종양하부연항문연거리값
+	lstm_anju_dst_vl numeric(10,3)  , -- 종양하부연항문직장경계거리값
+	tumr_ansp_exts_cont varchar(4000)  , -- 종양항문괄약근침범내용
+	tumr_circ_loca_spcd varchar(20)  , -- 종양환상위치구분코드
+	tumr_circ_loca_spnm varchar(200)  , -- 종양환상위치구분명
+	tmin_mxdp_vl numeric(10,3)  , -- 종양침윤최대깊이값
+	bwpf_yn_unid_spcd varchar(20)  , -- 장천공여부확인불가구분코드
+	bwpf_yn_unid_spnm varchar(200)  , -- 장천공여부확인불가구분명
+	inob_yn_unid_spcd varchar(20)  , -- 장폐색여부확인불가구분코드
+	inob_yn_unid_spnm varchar(200)  , -- 장폐색여부확인불가구분명
+	imex_rslt_cont varchar(4000)  , -- 영상검사결과내용
+	crtn_dt timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP , -- 생성일시
+	CONSTRAINT clcn_exam_imag_pk PRIMARY KEY (hosp_cd, pt_sbst_no, imex_ymd, imex_seq)
+);
+COMMENT ON TABLE clcn_exam_imag IS '대장암_검사_영상';
+
+-- Column comments
+COMMENT ON COLUMN clcn_exam_imag.hosp_cd IS '병원코드' ;
+COMMENT ON COLUMN clcn_exam_imag.pt_sbst_no IS '환자대체번호' ;
+COMMENT ON COLUMN clcn_exam_imag.imex_ymd IS '영상검사일자' ;
+COMMENT ON COLUMN clcn_exam_imag.imex_seq IS '영상검사순번' ;
+COMMENT ON COLUMN clcn_exam_imag.imex_kncd IS '영상검사종류코드' ;
+COMMENT ON COLUMN clcn_exam_imag.imex_knnm IS '영상검사종류명' ;
+COMMENT ON COLUMN clcn_exam_imag.imex_cd IS '영상검사코드' ;
+COMMENT ON COLUMN clcn_exam_imag.imex_nm IS '영상검사명' ;
+COMMENT ON COLUMN clcn_exam_imag.imex_edi_cd IS '영상검사EDI코드' ;
+COMMENT ON COLUMN clcn_exam_imag.imex_edi_nm IS '영상검사EDI명' ;
+COMMENT ON COLUMN clcn_exam_imag.imex_smct_cd IS '영상검사SNOMEDCT코드' ;
+COMMENT ON COLUMN clcn_exam_imag.imex_smct_nm IS '영상검사SNOMEDCT명' ;
+COMMENT ON COLUMN clcn_exam_imag.t4b_inva_orgn_spcd IS 'T4B침윤장기구분코드' ;
+COMMENT ON COLUMN clcn_exam_imag.t4b_inva_orgn_spnm IS 'T4B침윤장기구분명' ;
+COMMENT ON COLUMN clcn_exam_imag.t4b_inva_orgn_clsf_etc_cont IS 'T4B침윤장기구분기타내용';
+COMMENT ON COLUMN clcn_exam_imag.frnt_prtm_tumr_rlcd IS '전방복막종양관계코드' ;
+COMMENT ON COLUMN clcn_exam_imag.frnt_prtm_tumr_rlnm IS '전방복막종양관계명' ;
+COMMENT ON COLUMN clcn_exam_imag.frnt_prtm_tumr_rltn_etc_cont IS '전방복막종양관계기타내용';    
+COMMENT ON COLUMN clcn_exam_imag.tumr_msfc_shrt_dst_vl IS '종양직장간근막최단거리값' ;
+COMMENT ON COLUMN clcn_exam_imag.tumr_rspn_grcd IS '종양반응등급코드' ;
+COMMENT ON COLUMN clcn_exam_imag.tumr_rspn_grnm IS '종양반응등급명' ;
+COMMENT ON COLUMN clcn_exam_imag.tumr_emvi_ex_yn_spcd IS '종양장벽외혈관침윤존재여부구분코드' ;
+COMMENT ON COLUMN clcn_exam_imag.tumr_emvi_ex_yn_spnm IS '종양장벽외혈관침윤존재여부구분명' ;
+COMMENT ON COLUMN clcn_exam_imag.tumr_msrt_ln_mtst_ex_yn_spcd IS '종양직장간내림프절전이존재여부구분코드' ;
+COMMENT ON COLUMN clcn_exam_imag.tumr_msrt_ln_mtst_ex_yn_spnm IS '종양직장간내림프절전이존재여부구분명' ;
+COMMENT ON COLUMN clcn_exam_imag.tumr_exms_ln_mtst_ex_yn_spcd IS '종양직장간외림프절전이존재여부구분코드' ;
+COMMENT ON COLUMN clcn_exam_imag.tumr_exms_ln_mtst_ex_yn_spnm IS '종양직장간외림프절전이존재여부구분명' ;
+COMMENT ON COLUMN clcn_exam_imag.lstm_anvg_dst_vl IS '종양하부연항문연거리값' ;
+COMMENT ON COLUMN clcn_exam_imag.lstm_anju_dst_vl IS '종양하부연항문직장경계거리값' ;
+COMMENT ON COLUMN clcn_exam_imag.tumr_ansp_exts_cont IS '종양항문괄약근침범내용' ;
+COMMENT ON COLUMN clcn_exam_imag.tumr_circ_loca_spcd IS '종양환상위치구분코드' ;
+COMMENT ON COLUMN clcn_exam_imag.tumr_circ_loca_spnm IS '종양환상위치구분명' ;
+COMMENT ON COLUMN clcn_exam_imag.tmin_mxdp_vl IS '종양침윤최대깊이값' ;
+COMMENT ON COLUMN clcn_exam_imag.bwpf_yn_unid_spcd IS '장천공여부확인불가구분코드' ;
+COMMENT ON COLUMN clcn_exam_imag.bwpf_yn_unid_spnm IS '장천공여부확인불가구분명' ;
+COMMENT ON COLUMN clcn_exam_imag.inob_yn_unid_spcd IS '장폐색여부확인불가구분코드' ;
+COMMENT ON COLUMN clcn_exam_imag.inob_yn_unid_spnm IS '장폐색여부확인불가구분명' ;
+COMMENT ON COLUMN clcn_exam_imag.imex_rslt_cont IS '영상검사결과내용' ;
+COMMENT ON COLUMN clcn_exam_imag.crtn_dt IS '생성일시' ;
+
+-- 09.대장암_검사_면역병리
+-- 대장암_검사_면역병리 테이블 생성 스크립트 
+
+-- DROP TABLE clcn_exam_mlpt;
+
+CREATE TABLE clcn_exam_impt (
+	hosp_cd varchar(20) NOT NULL , -- 병원코드
+	pt_sbst_no varchar(10) NOT NULL , -- 환자대체번호
+	imem_ymd varchar(8) NOT NULL , -- 면역병리검사일자
+	imem_seq numeric(3) NOT NULL , -- 면역병리검사순번
+	impt_read_ymd varchar(8) NOT NULL , -- 면역병리판독일자
+	imem_cd varchar(20)  , -- 면역병리검사코드
+	imem_nm varchar(200)  , -- 면역병리검사명
+	imem_kncd varchar(20)  , -- 면역병리검사종류코드
+	imem_knnm varchar(200)  , -- 면역병리검사종류명
+	imem_opn_cd varchar(20)  , -- 면역병리검사소견코드
+	imem_opn_nm varchar(200)  , -- 면역병리검사소견명
+	impt_exam_rslt_cont varchar(4000)  , -- 면역병리검사결과내용
+	crtn_dt timestamp NOT NULL  DEFAULT CURRENT_TIMESTAMP, -- 생성일시
+	CONSTRAINT clcn_exam_impt_pk PRIMARY KEY (hosp_cd, pt_sbst_no, imem_ymd, imem_seq)
+);
+
+COMMENT ON TABLE clcn_exam_impt IS '대장암_검사_면역병리';
+
+-- Column comments
+COMMENT ON COLUMN clcn_exam_impt.hosp_cd IS '병원코드' ;
+COMMENT ON COLUMN clcn_exam_impt.pt_sbst_no IS '환자대체번호' ;
+COMMENT ON COLUMN clcn_exam_impt.imem_ymd IS '면역병리검사일자' ;
+COMMENT ON COLUMN clcn_exam_impt.imem_seq IS '면역병리검사순번' ;
+COMMENT ON COLUMN clcn_exam_impt.impt_read_ymd IS '면역병리판독일자' ;
+COMMENT ON COLUMN clcn_exam_impt.imem_cd IS '면역병리검사코드' ;
+COMMENT ON COLUMN clcn_exam_impt.imem_nm IS '면역병리검사명' ;
+COMMENT ON COLUMN clcn_exam_impt.imem_kncd IS '면역병리검사종류코드' ;
+COMMENT ON COLUMN clcn_exam_impt.imem_knnm IS '면역병리검사종류명' ;
+COMMENT ON COLUMN clcn_exam_impt.imem_opn_cd IS '면역병리검사소견코드' ;
+COMMENT ON COLUMN clcn_exam_impt.imem_opn_nm IS '면역병리검사소견명' ;
+COMMENT ON COLUMN clcn_exam_impt.impt_exam_rslt_cont IS '면역병리검사결과내용' ;
+COMMENT ON COLUMN clcn_exam_impt.crtn_dt IS '생성일시' ;
+
+-- 10.대장암_검사_분자병리
+-- 대장암_검사_분자병리 테이블 생성 스크립트 
+
+-- DROP TABLE clcn_exam_mlpt;
+
+CREATE TABLE clcn_exam_mlpt (
+	hosp_cd varchar(20) NOT NULL , -- 병원코드
+	pt_sbst_no varchar(10) NOT NULL , -- 환자대체번호
+	mlem_ymd varchar(8) NOT NULL , -- 분자병리검사일자
+	mlem_seq numeric(3) NOT NULL , -- 분자병리검사순번
+	mlpt_read_ymd varchar(8) NOT NULL , -- 분자병리판독일자
+	mlem_cd varchar(20)  , -- 분자병리검사코드
+	mlem_nm varchar(200)  , -- 분자병리검사명
+	mlem_kncd varchar(20)  , -- 분자병리검사종류코드
+	mlem_knnm varchar(200)  , -- 분자병리검사종류명
+	mlem_opn_cd varchar(20)  , -- 분자병리검사소견코드
+	mlem_opn_nm varchar(200)  , -- 분자병리검사소견명
+	mlpt_exam_rslt_cont varchar(4000)  , -- 분자병리검사결과내용
+	crtn_dt timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP , -- 생성일시
+
+	CONSTRAINT clcn_exam_mlpt_pk PRIMARY KEY (hosp_cd, pt_sbst_no, mlem_ymd, mlem_seq)
+);
+COMMENT ON TABLE clcn_exam_mlpt IS '대장암_검사_분자병리';
+
+-- Column comments
+COMMENT ON COLUMN clcn_exam_mlpt.hosp_cd IS '병원코드' ;
+COMMENT ON COLUMN clcn_exam_mlpt.pt_sbst_no IS '환자대체번호' ;
+COMMENT ON COLUMN clcn_exam_mlpt.mlem_ymd IS '분자병리검사일자' ;
+COMMENT ON COLUMN clcn_exam_mlpt.mlem_seq IS '분자병리검사순번' ;
+COMMENT ON COLUMN clcn_exam_mlpt.mlpt_read_ymd IS '분자병리판독일자' ;
+COMMENT ON COLUMN clcn_exam_mlpt.mlem_cd IS '분자병리검사코드' ;
+COMMENT ON COLUMN clcn_exam_mlpt.mlem_nm IS '분자병리검사명' ;
+COMMENT ON COLUMN clcn_exam_mlpt.mlem_kncd IS '분자병리검사종류코드' ;
+COMMENT ON COLUMN clcn_exam_mlpt.mlem_knnm IS '분자병리검사종류명' ;
+COMMENT ON COLUMN clcn_exam_mlpt.mlem_opn_cd IS '분자병리검사소견코드' ;
+COMMENT ON COLUMN clcn_exam_mlpt.mlem_opn_nm IS '분자병리검사소견명' ;
+COMMENT ON COLUMN clcn_exam_mlpt.mlpt_exam_rslt_cont IS '분자병리검사결과내용' ;
+COMMENT ON COLUMN clcn_exam_mlpt.crtn_dt IS '생성일시' ;
+
+
+
+-- 11.대장암_검사_생체
+-- 대장암_검사_생체 테이블 생성 스크립트 
+
+-- DROP TABLE clcn_exam_byps;
+
+CREATE TABLE clcn_exam_byps (
+	hosp_cd varchar(20) NOT NULL , -- 병원코드
+	pt_sbst_no varchar(10) NOT NULL , -- 환자대체번호
+	bpsy_ymd varchar(8) NOT NULL , -- 생체검사일자
+	bpsy_seq numeric(3) NOT NULL , -- 생체검사순번
+	bpsy_read_ymd varchar(8) NOT NULL , -- 생체검사판독일자
+	bpsy_mthd_kncd varchar(20)  , -- 생체검사방법종류코드
+	bpsy_mthd_knnm varchar(200)  , -- 생체검사방법종류명
+	bpsy_mtcd varchar(20)  , -- 생체검사방법코드
+	bpsy_mtnm varchar(200)  , -- 생체검사방법명
+	bpsy_site_cd varchar(20)  , -- 생체검사부위코드
+	bpsy_site_nm varchar(200)  , -- 생체검사부위명
+	bpsy_coln_tumr_dtlc_spcd varchar(20)  , -- 생체검사결장종양세부위치구분코드
+	bpsy_coln_tumr_dtlc_spnm varchar(200)  , -- 생체검사결장종양세부위치구분명
+	bpsy_rctm_dtl_site_cont varchar(4000)  , -- 생체검사직장세부부위내용
+	htlg_diag_cd varchar(20)  , -- 조직학적진단코드
+	htlg_diag_nm varchar(200)  , -- 조직학적진단명
+	htlg_grcd varchar(20)  , -- 조직학적등급코드
+	htlg_grnm varchar(200)  , -- 조직학적등급명
+	bpsy_rslt_cont varchar(4000) NOT NULL , -- 생체검사결과내용
+	crtn_dt timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP , -- 생성일시
+	CONSTRAINT clcn_exam_byps_pk PRIMARY KEY (hosp_cd, pt_sbst_no, bpsy_ymd, bpsy_seq)
+);
+COMMENT ON TABLE clcn_exam_byps IS '대장암_검사_생체';
+
+-- Column comments
+COMMENT ON COLUMN clcn_exam_byps.hosp_cd IS '병원코드' ;
+COMMENT ON COLUMN clcn_exam_byps.pt_sbst_no IS '환자대체번호' ;
+COMMENT ON COLUMN clcn_exam_byps.bpsy_ymd IS '생체검사일자' ;
+COMMENT ON COLUMN clcn_exam_byps.bpsy_seq IS '생체검사순번' ;
+COMMENT ON COLUMN clcn_exam_byps.bpsy_read_ymd IS '생체검사판독일자' ;
+COMMENT ON COLUMN clcn_exam_byps.bpsy_mthd_kncd IS '생체검사방법종류코드' ;
+COMMENT ON COLUMN clcn_exam_byps.bpsy_mthd_knnm IS '생체검사방법종류명' ;
+COMMENT ON COLUMN clcn_exam_byps.bpsy_mtcd IS '생체검사방법코드' ;
+COMMENT ON COLUMN clcn_exam_byps.bpsy_mtnm IS '생체검사방법명' ;
+COMMENT ON COLUMN clcn_exam_byps.bpsy_site_cd IS '생체검사부위코드' ;
+COMMENT ON COLUMN clcn_exam_byps.bpsy_site_nm IS '생체검사부위명' ;
+COMMENT ON COLUMN clcn_exam_byps.bpsy_coln_tumr_dtlc_spcd IS '생체검사결장종양세부위치구분코드' ;
+COMMENT ON COLUMN clcn_exam_byps.bpsy_coln_tumr_dtlc_spnm IS '생체검사결장종양세부위치구분명' ;
+COMMENT ON COLUMN clcn_exam_byps.bpsy_rctm_dtl_site_cont IS '생체검사직장세부부위내용' ;
+COMMENT ON COLUMN clcn_exam_byps.htlg_diag_cd IS '조직학적진단코드' ;
+COMMENT ON COLUMN clcn_exam_byps.htlg_diag_nm IS '조직학적진단명' ;
+COMMENT ON COLUMN clcn_exam_byps.htlg_grcd IS '조직학적등급코드' ;
+COMMENT ON COLUMN clcn_exam_byps.htlg_grnm IS '조직학적등급명' ;
+COMMENT ON COLUMN clcn_exam_byps.bpsy_rslt_cont IS '생체검사결과내용' ;
+COMMENT ON COLUMN clcn_exam_byps.crtn_dt IS '생성일시' ;
+
+
+
+-- 12.대장암_치료_수술
+-- 대장암_치료_수술 테이블 생성 스크립트 
+
+-- DROP TABLE clcn_trtm_oprt;
+
+CREATE TABLE clcn_trtm_oprt (
+	hosp_cd varchar(20) NOT NULL , -- 병원코드
+	pt_sbst_no varchar(10) NOT NULL , -- 환자대체번호
+	oprt_ymd varchar(8) NOT NULL , -- 수술일자
+	oprt_seq numeric(3) NOT NULL , -- 수술순번
+	oprt_ldtm varchar(20)  , -- 수술소요시간
+	oprt_prps_cd varchar(20)  , -- 수술목적코드
+	oprt_prps_nm varchar(200)  , -- 수술목적명
+	oprt_kncd varchar(20) NOT NULL , -- 수술종류코드
+	oprt_knnm varchar(200) NOT NULL , -- 수술종류명
+	oprt_cd varchar(20) NOT NULL , -- 수술코드
+	oprt_nm varchar(500) NOT NULL , -- 수술명
+	oprt_edi_cd varchar(20)  , -- 수술EDI코드
+	oprt_edi_nm varchar(200)  , -- 수술EDI명
+	oprt_smct_cd varchar(200)  , -- 수술SNOMEDCT코드
+	oprt_smct_nm varchar(1000)  , -- 수술SNOMEDCT명
+	oprt_icd9cm_cd varchar(20)  , -- 수술ICD9CM코드
+	oprt_icd9cm_nm varchar(1000)  , -- 수술ICD9CM명
+	sync_mtst_yn_unid_spcd varchar(20)  , -- 동시성전이여부확인불가구분코드
+	sync_mtst_yn_unid_spnm varchar(50)  , -- 동시성전이여부확인불가구분명
+	sync_mtst_oprt_detl_cont varchar(4000)  , -- 동시성전이수술상세내용
+	otog_exts_yn_unid_spcd varchar(20)  , -- 타장기침범여부확인불가구분코드
+	otog_exts_yn_unid_spnm varchar(50)  , -- 타장기침범여부확인불가구분명
+	otog_exts_oprt_detl_cont varchar(4000)  , -- 타장기침범수술상세내용
+	oprt_mtcd varchar(20) NOT NULL , -- 수술방법코드
+	oprt_mtnm varchar(200) NOT NULL , -- 수술방법명
+	oprt_anst_site_cd varchar(20) NOT NULL , -- 수술마취부위코드
+	oprt_anst_site_nm varchar(200) NOT NULL , -- 수술마취부위명
+	asa_scor_cd varchar(20)  , -- ASA점수코드
+	asa_scor_nm varchar(200)  , -- ASA점수명
+	oprt_incs_mthd_cont varchar(4000)  , -- 수술절개방법내용
+	inop_tumr_loca_spcd varchar(20)  , -- 수술시종양위치구분코드
+	inop_tumr_loca_spnm varchar(500)  , -- 수술시종양위치구분명
+	inop_coln_tumr_dtlc_spcd varchar(20)  , -- 수술시결장종양세부위치구분코드
+	inop_coln_tumr_dtlc_spnm varchar(500)  , -- 수술시결장종양세부위치구분명
+	inop_rctm_tumr_dtlc_1_spcd varchar(20)  , -- 수술시직장종양세부위치1구분코드
+	inop_rctm_tumr_dtlc_1_spnm varchar(500)  , -- 수술시직장종양세부위치1구분명
+	inop_rctm_tumr_dtlc_2_spcd varchar(20)  , -- 수술시직장종양세부위치2구분코드
+	inop_rctm_tumr_dtlc_2_spnm varchar(500)  , -- 수술시직장종양세부위치2구분명
+	obst_trtm_spcd varchar(20)  , -- 폐색치료구분코드
+	obst_trtm_spnm varchar(500)  , -- 폐색치료구분명
+	lapr_conv_yn_unid_spcd varchar(20)  , -- 개복전환여부확인불가구분코드
+	lapr_conv_yn_unid_spnm varchar(500)  , -- 개복전환여부확인불가구분명
+	lapr_conv_resn_spcd varchar(20)  , -- 개복전환이유구분코드
+	lapr_conv_resn_spnm varchar(500)  , -- 개복전환이유구분명
+	ostm_frmt_yn_unid_spcd varchar(20)  , -- 장루형성여부확인불가구분코드
+	ostm_frmt_yn_unid_spnm varchar(500)  , -- 장루형성여부확인불가구분명
+	ostm_frsn_spcd varchar(20)  , -- 장루형성이유구분코드
+	ostm_frsn_spnm varchar(500)  , -- 장루형성이유구분명
+	ostm_frsn_clsf_etc_cont varchar(4000)  , -- 장루형성이유구분기타내용
+	ima_ligt_loca_spcd varchar(20)  , -- IMALIGATION위치구분코드
+	ima_ligt_loca_spnm varchar(500)  , -- IMALIGATION위치구분명
+	inap_dsnt_mtst_site_cd varchar(20)  , -- 복강내원격전이부위코드
+	inap_dsnt_mtst_site_nm varchar(500)  , -- 복강내원격전이부위명
+	inap_dsnt_mtst_site_etc_cont varchar(4000)  , -- 복강내원격전이부위기타내용
+	spfl_mobl_yn_unid_spcd varchar(20)  , -- 비장굴곡가동화여부확인불가구분코드
+	spfl_mobl_yn_unid_spnm varchar(500)  , -- 비장굴곡가동화여부확인불가구분명
+	curdg_cd varchar(20)  , -- 근치도코드
+	curdg_nm varchar(200)  , -- 근치도명
+	otog_sycn_site_spcd varchar(20)  , -- 타장기동시성암부위구분코드
+	otog_sycn_site_spnm varchar(500)  , -- 타장기동시성암부위구분명
+	otog_sycn_trtm_mtcd varchar(20)  , -- 타장기동시성암치료방법코드
+	otog_sycn_trtm_mtnm varchar(500)  , -- 타장기동시성암치료방법명
+	ansc_loca_dst_vl numeric(5)  , -- 문합부위치거리값
+	anes_mtcd varchar(20)  , -- 문합방법코드
+	anes_mtnm varchar(500)  , -- 문합방법명
+	anes_mthd_detl_spcd varchar(20)  , -- 문합방법상세구분코드
+	anes_mthd_detl_spnm varchar(500)  , -- 문합방법상세구분명
+	ebl_qty_spcd varchar(20)  , -- 추정실혈량구분코드
+	ebl_qty_spnm varchar(200)  , -- 추정실혈량구분명
+	ebl_qty numeric(5)  , -- 추정실혈량
+	afop_asmt_item_cd varchar(20)  , -- 수술후평가항목코드
+	afop_asmt_item_nm varchar(200)  , -- 수술후평가항목명
+	afop_asmt_item_etc_cont varchar(4000)  , -- 수술후평가항목기타내용
+	crtn_dt timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP , -- 생성일시
+	CONSTRAINT clcn_trtm_oprt_pk PRIMARY KEY (hosp_cd, pt_sbst_no, oprt_ymd, oprt_seq)
+);
+COMMENT ON TABLE clcn_trtm_oprt IS '대장암_치료_수술';
+
+-- Column comments
+COMMENT ON COLUMN clcn_trtm_oprt.hosp_cd IS '병원코드' ;
+COMMENT ON COLUMN clcn_trtm_oprt.pt_sbst_no IS '환자대체번호' ;
+COMMENT ON COLUMN clcn_trtm_oprt.oprt_ymd IS '수술일자' ;
+COMMENT ON COLUMN clcn_trtm_oprt.oprt_seq IS '수술순번' ;
+COMMENT ON COLUMN clcn_trtm_oprt.oprt_ldtm IS '수술소요시간' ;
+COMMENT ON COLUMN clcn_trtm_oprt.oprt_prps_cd IS '수술목적코드' ;
+COMMENT ON COLUMN clcn_trtm_oprt.oprt_prps_nm IS '수술목적명' ;
+COMMENT ON COLUMN clcn_trtm_oprt.oprt_kncd IS '수술종류코드' ;
+COMMENT ON COLUMN clcn_trtm_oprt.oprt_knnm IS '수술종류명' ;
+COMMENT ON COLUMN clcn_trtm_oprt.oprt_cd IS '수술코드' ;
+COMMENT ON COLUMN clcn_trtm_oprt.oprt_nm IS '수술명' ;
+COMMENT ON COLUMN clcn_trtm_oprt.oprt_edi_cd IS '수술EDI코드' ;
+COMMENT ON COLUMN clcn_trtm_oprt.oprt_edi_nm IS '수술EDI명' ;
+COMMENT ON COLUMN clcn_trtm_oprt.oprt_smct_cd IS '수술SNOMEDCT코드' ;
+COMMENT ON COLUMN clcn_trtm_oprt.oprt_smct_nm IS '수술SNOMEDCT명' ;
+COMMENT ON COLUMN clcn_trtm_oprt.oprt_icd9cm_cd IS '수술ICD9CM코드' ;
+COMMENT ON COLUMN clcn_trtm_oprt.oprt_icd9cm_nm IS '수술ICD9CM명' ;
+COMMENT ON COLUMN clcn_trtm_oprt.sync_mtst_yn_unid_spcd IS '동시성전이여부확인불가구분코드' ;
+COMMENT ON COLUMN clcn_trtm_oprt.sync_mtst_yn_unid_spnm IS '동시성전이여부확인불가구분명' ;
+COMMENT ON COLUMN clcn_trtm_oprt.sync_mtst_oprt_detl_cont IS '동시성전이수술상세내용' ;
+COMMENT ON COLUMN clcn_trtm_oprt.otog_exts_yn_unid_spcd IS '타장기침범여부확인불가구분코드' ;
+COMMENT ON COLUMN clcn_trtm_oprt.otog_exts_yn_unid_spnm IS '타장기침범여부확인불가구분명' ;
+COMMENT ON COLUMN clcn_trtm_oprt.otog_exts_oprt_detl_cont IS '타장기침범수술상세내용' ;
+COMMENT ON COLUMN clcn_trtm_oprt.oprt_mtcd IS '수술방법코드' ;
+COMMENT ON COLUMN clcn_trtm_oprt.oprt_mtnm IS '수술방법명' ;
+COMMENT ON COLUMN clcn_trtm_oprt.oprt_anst_site_cd IS '수술마취부위코드' ;
+COMMENT ON COLUMN clcn_trtm_oprt.oprt_anst_site_nm IS '수술마취부위명' ;
+COMMENT ON COLUMN clcn_trtm_oprt.asa_scor_cd IS 'ASA점수코드' ;
+COMMENT ON COLUMN clcn_trtm_oprt.asa_scor_nm IS 'ASA점수명' ;
+COMMENT ON COLUMN clcn_trtm_oprt.oprt_incs_mthd_cont IS '수술절개방법내용' ;
+COMMENT ON COLUMN clcn_trtm_oprt.inop_tumr_loca_spcd IS '수술시종양위치구분코드' ;
+COMMENT ON COLUMN clcn_trtm_oprt.inop_tumr_loca_spnm IS '수술시종양위치구분명' ;
+COMMENT ON COLUMN clcn_trtm_oprt.inop_coln_tumr_dtlc_spcd IS '수술시결장종양세부위치구분코드' ;
+COMMENT ON COLUMN clcn_trtm_oprt.inop_coln_tumr_dtlc_spnm IS '수술시결장종양세부위치구분명' ;
+COMMENT ON COLUMN clcn_trtm_oprt.inop_rctm_tumr_dtlc_1_spcd IS '수술시직장종양세부위치1구분코드' ;
+COMMENT ON COLUMN clcn_trtm_oprt.inop_rctm_tumr_dtlc_1_spnm IS '수술시직장종양세부위치1구분명' ;
+COMMENT ON COLUMN clcn_trtm_oprt.inop_rctm_tumr_dtlc_2_spcd IS '수술시직장종양세부위치2구분코드' ;
+COMMENT ON COLUMN clcn_trtm_oprt.inop_rctm_tumr_dtlc_2_spnm IS '수술시직장종양세부위치2구분명' ;
+COMMENT ON COLUMN clcn_trtm_oprt.obst_trtm_spcd IS '폐색치료구분코드' ;
+COMMENT ON COLUMN clcn_trtm_oprt.obst_trtm_spnm IS '폐색치료구분명' ;
+COMMENT ON COLUMN clcn_trtm_oprt.lapr_conv_yn_unid_spcd IS '개복전환여부확인불가구분코드' ;
+COMMENT ON COLUMN clcn_trtm_oprt.lapr_conv_yn_unid_spnm IS '개복전환여부확인불가구분명' ;
+COMMENT ON COLUMN clcn_trtm_oprt.lapr_conv_resn_spcd IS '개복전환이유구분코드' ;
+COMMENT ON COLUMN clcn_trtm_oprt.lapr_conv_resn_spnm IS '개복전환이유구분명' ;
+COMMENT ON COLUMN clcn_trtm_oprt.ostm_frmt_yn_unid_spcd IS '장루형성여부확인불가구분코드' ;
+COMMENT ON COLUMN clcn_trtm_oprt.ostm_frmt_yn_unid_spnm IS '장루형성여부확인불가구분명' ;
+COMMENT ON COLUMN clcn_trtm_oprt.ostm_frsn_spcd IS '장루형성이유구분코드' ;
+COMMENT ON COLUMN clcn_trtm_oprt.ostm_frsn_spnm IS '장루형성이유구분명' ;
+COMMENT ON COLUMN clcn_trtm_oprt.ostm_frsn_clsf_etc_cont IS '장루형성이유구분기타내용' ;
+COMMENT ON COLUMN clcn_trtm_oprt.ima_ligt_loca_spcd IS 'IMALIGATION위치구분코드' ;
+COMMENT ON COLUMN clcn_trtm_oprt.ima_ligt_loca_spnm IS 'IMALIGATION위치구분명' ;
+COMMENT ON COLUMN clcn_trtm_oprt.inap_dsnt_mtst_site_cd IS '복강내원격전이부위코드' ;
+COMMENT ON COLUMN clcn_trtm_oprt.inap_dsnt_mtst_site_nm IS '복강내원격전이부위명' ;
+COMMENT ON COLUMN clcn_trtm_oprt.inap_dsnt_mtst_site_etc_cont IS '복강내원격전이부위기타내용' ;
+COMMENT ON COLUMN clcn_trtm_oprt.spfl_mobl_yn_unid_spcd IS '비장굴곡가동화여부확인불가구분코드' ;
+COMMENT ON COLUMN clcn_trtm_oprt.spfl_mobl_yn_unid_spnm IS '비장굴곡가동화여부확인불가구분명' ;
+COMMENT ON COLUMN clcn_trtm_oprt.curdg_cd IS '근치도코드' ;
+COMMENT ON COLUMN clcn_trtm_oprt.curdg_nm IS '근치도명' ;
+COMMENT ON COLUMN clcn_trtm_oprt.otog_sycn_site_spcd IS '타장기동시성암부위구분코드' ;
+COMMENT ON COLUMN clcn_trtm_oprt.otog_sycn_site_spnm IS '타장기동시성암부위구분명' ;
+COMMENT ON COLUMN clcn_trtm_oprt.otog_sycn_trtm_mtcd IS '타장기동시성암치료방법코드' ;
+COMMENT ON COLUMN clcn_trtm_oprt.otog_sycn_trtm_mtnm IS '타장기동시성암치료방법명' ;
+COMMENT ON COLUMN clcn_trtm_oprt.ansc_loca_dst_vl IS '문합부위치거리값' ;
+COMMENT ON COLUMN clcn_trtm_oprt.anes_mtcd IS '문합방법코드' ;
+COMMENT ON COLUMN clcn_trtm_oprt.anes_mtnm IS '문합방법명' ;
+COMMENT ON COLUMN clcn_trtm_oprt.anes_mthd_detl_spcd IS '문합방법상세구분코드' ;
+COMMENT ON COLUMN clcn_trtm_oprt.anes_mthd_detl_spnm IS '문합방법상세구분명' ;
+COMMENT ON COLUMN clcn_trtm_oprt.ebl_qty_spcd IS '추정실혈량구분코드' ;
+COMMENT ON COLUMN clcn_trtm_oprt.ebl_qty_spnm IS '추정실혈량구분명' ;
+COMMENT ON COLUMN clcn_trtm_oprt.ebl_qty IS '추정실혈량' ;
+COMMENT ON COLUMN clcn_trtm_oprt.afop_asmt_item_cd IS '수술후평가항목코드' ;
+COMMENT ON COLUMN clcn_trtm_oprt.afop_asmt_item_nm IS '수술후평가항목명' ;
+COMMENT ON COLUMN clcn_trtm_oprt.afop_asmt_item_etc_cont IS '수술후평가항목기타내용' ;
+COMMENT ON COLUMN clcn_trtm_oprt.crtn_dt IS '생성일시' ;
+
+-- 13.대장암_치료_장루복원술
+-- 대장암_치료_장루복원술 테이블 생성 스크립트 
+
+-- DROP TABLE clcn_trtm_stmr;
+
+CREATE TABLE clcn_trtm_stmr (
+	hosp_cd varchar(20) NOT NULL , -- 병원코드
+	pt_sbst_no varchar(10) NOT NULL , -- 환자대체번호
+	ostm_reop_ymd varchar(8) NOT NULL , -- 장루복원수술일자
+	ostm_reop_seq numeric(3) NOT NULL , -- 장루복원수술순번
+	ostm_reop_spcd varchar(20)  , -- 장루복원수술구분코드
+	ostm_reop_spnm varchar(200)  , -- 장루복원수술구분명
+	ostm_reop_cd varchar(20)  , -- 장루복원수술코드
+	ostm_reop_nm varchar(200)  , -- 장루복원수술명
+	ostm_reop_loca_spcd varchar(20)  , -- 장루복원수술위치구분코드
+	ostm_reop_loca_spnm varchar(200)  , -- 장루복원수술위치구분명
+	etc_ostm_rest_loca_detl_cont varchar(4000)  , -- 기타장루복원위치상세내용
+	crtn_dt timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP , -- 생성일시
+	CONSTRAINT clcn_trtm_stmr_pk PRIMARY KEY (hosp_cd, pt_sbst_no, ostm_reop_ymd, ostm_reop_seq)
+);
+COMMENT ON TABLE clcn_trtm_stmr IS '대장암_치료_장루복원술';
+
+-- Column comments
+COMMENT ON COLUMN clcn_trtm_stmr.hosp_cd IS '병원코드' ;
+COMMENT ON COLUMN clcn_trtm_stmr.pt_sbst_no IS '환자대체번호' ;
+COMMENT ON COLUMN clcn_trtm_stmr.ostm_reop_ymd IS '장루복원수술일자' ;
+COMMENT ON COLUMN clcn_trtm_stmr.ostm_reop_seq IS '장루복원수술순번' ;
+COMMENT ON COLUMN clcn_trtm_stmr.ostm_reop_spcd IS '장루복원수술구분코드' ;
+COMMENT ON COLUMN clcn_trtm_stmr.ostm_reop_spnm IS '장루복원수술구분명' ;
+COMMENT ON COLUMN clcn_trtm_stmr.ostm_reop_cd IS '장루복원수술코드' ;
+COMMENT ON COLUMN clcn_trtm_stmr.ostm_reop_nm IS '장루복원수술명' ;
+COMMENT ON COLUMN clcn_trtm_stmr.ostm_reop_loca_spcd IS '장루복원수술위치구분코드' ;
+COMMENT ON COLUMN clcn_trtm_stmr.ostm_reop_loca_spnm IS '장루복원수술위치구분명' ;
+COMMENT ON COLUMN clcn_trtm_stmr.etc_ostm_rest_loca_detl_cont IS '기타장루복원위치상세내용' ;
+COMMENT ON COLUMN clcn_trtm_stmr.crtn_dt IS '생성일시' ;
+
+
+-- 14.대장암_검사_외과병리
+-- 대장암_검사_외과병리 테이블 생성 스크립트 
+
+-- DROP TABLE clcn_exam_sgpt;
+
+CREATE TABLE clcn_exam_sgpt (
+	hosp_cd varchar(20) NOT NULL , -- 병원코드
+	pt_sbst_no varchar(10) NOT NULL , -- 환자대체번호
+	srgc_ptem_ymd varchar(8) NOT NULL , -- 외과병리검사일자
+	srgc_ptem_seq numeric(3) NOT NULL , -- 외과병리검사순번
+	sgpt_read_ymd varchar(8) NOT NULL , -- 외과병리판독일자
+	sgpt_hvst_site_cont varchar(4000)  , -- 외과병리채취부위내용
+	sgpt_tumr_loca_spcd varchar(20)  , -- 외과병리종양위치구분코드
+	sgpt_tumr_loca_spnm varchar(200)  , -- 외과병리종양위치구분명
+	sgpt_coln_tumr_dtlc_spcd varchar(20)  , -- 외과병리결장종양세부위치구분코드
+	sgpt_coln_tumr_dtlc_spnm varchar(200)  , -- 외과병리결장종양세부위치구분명
+	sgpt_rctm_tumr_dtlc_1_spcd varchar(20)  , -- 외과병리직장종양세부위치1구분코드
+	sgpt_rctm_tumr_dtlc_1_spnm varchar(200)  , -- 외과병리직장종양세부위치1구분명
+	sgpt_rctm_tumr_dtlc_2_spcd varchar(20)  , -- 외과병리직장종양세부위치2구분코드
+	sgpt_rctm_tumr_dtlc_2_spnm varchar(200)  , -- 외과병리직장종양세부위치2구분명
+	srgc_ptem_rslt_tumr_cnt numeric(3)  , -- 외과병리검사결과종양수
+	tumr_wdth_lnth_vl numeric(10,3)  , -- 종양가로길이값
+	tumr_lgtd_lnth_vl numeric(10,3)  , -- 종양세로길이값
+	tumr_hght_vl numeric(10,3)  , -- 종양높이값
+	tumr_max_diam_vl numeric(10,3)  , -- 종양최대직경값
+	htlg_diag_cd varchar(20)  , -- 조직학적진단코드
+	htlg_diag_nm varchar(200)  , -- 조직학적진단명
+	htlg_grcd varchar(20)  , -- 조직학적등급코드
+	htlg_grnm varchar(200)  , -- 조직학적등급명
+	tumr_redc_grcd varchar(20)  , -- 종양축소등급코드
+	tumr_redc_grnm varchar(200)  , -- 종양축소등급명
+	gros_tpcd varchar(20)  , -- GROSS유형코드
+	gros_tpnm varchar(200)  , -- GROSS유형명
+	tumr_bndr_frm_spcd varchar(20)  , -- 종양경계형태구분코드
+	tumr_bndr_frm_spnm varchar(200)  , -- 종양경계형태구분명
+	lymp_inva_ex_yn_spcd varchar(20)  , -- 림프성침윤존재여부구분코드
+	lymp_inva_ex_yn_spnm varchar(50)  , -- 림프성침윤존재여부구분명
+	vasc_inva_ex_yn_spcd varchar(20)  , -- 혈관성침윤존재여부구분코드
+	vasc_inva_ex_yn_spnm varchar(50)  , -- 혈관성침윤존재여부구분명
+	nerv_prex_ex_yn_spcd varchar(20)  , -- 신경주위침윤존재여부구분코드
+	nerv_prex_ex_yn_spnm varchar(50)  , -- 신경주위침윤존재여부구분명
+	inva_dgre_cd varchar(20)  , -- 침윤정도코드
+	inva_dgre_nm varchar(200)  , -- 침윤정도명
+	tumr_deps_yn_spcd varchar(20)  , -- 종양침착여부구분코드
+	tumr_deps_yn_spnm varchar(50)  , -- 종양침착여부구분명
+	tumr_necr_ex_yn_spcd varchar(20)  , -- 종양괴사존재여부구분코드
+	tumr_necr_ex_yn_spnm varchar(200)  , -- 종양괴사존재여부구분명
+	srmg_sfmg_mrgn_lnth_vl numeric(10,3)  , -- 수술절제면안전경계면길이값
+	oprt_pmrg_rlcr_invl_yn_spcd varchar(20)  , -- 수술근위절제면잔존암포함여부구분코드
+	oprt_pmrg_rlcr_invl_yn_spnm varchar(50)  , -- 수술근위절제면잔존암포함여부구분명
+	oprt_dmrg_rlcr_invl_yn_spcd varchar(20)  , -- 수술원위절제면잔존암포함여부구분코드
+	oprt_dmrg_rlcr_invl_yn_spnm varchar(50)  , -- 수술원위절제면잔존암포함여부구분명
+	oprt_dmrg_size_vl numeric(10,3)  , -- 수술원위절제면크기값
+	radi_rsmg_invl_yn_spcd varchar(20)  , -- 방사절제연포함여부구분코드
+	radi_rsmg_invl_yn_spnm varchar(50)  , -- 방사절제연포함여부구분명
+	tumr_budd_ex_yn_spcd varchar(20)  , -- 종양발아존재여부구분코드
+	tumr_budd_ex_yn_spnm varchar(50)  , -- 종양발아존재여부구분명
+	mltc_tumr_spcd varchar(20)  , -- 다발성종양구분코드
+	mltc_tumr_spnm varchar(50)  , -- 다발성종양구분명
+	tme_qlt_dgre_spcd varchar(20)  , -- TMEQUALITY정도구분코드
+	tme_qlt_dgre_spnm varchar(50)  , -- TMEQUALITY정도구분명
+	totl_ln_cnt numeric(3)  , -- 총림프절수
+	pstv_ln_cnt varchar(100)  , -- 양성림프절수
+	ajcc_yr varchar(4)  , -- AJCC년도
+	afop_path_tnm_stag_vl varchar(200)  , -- 수술후병리TNM병기값
+	afop_path_t_stag_vl varchar(200)  , -- 수술후병리T병기값
+	afop_path_n_stag_vl varchar(200)  , -- 수술후병리N병기값
+	afop_path_m_stag_vl varchar(200)  , -- 수술후병리M병기값
+	sgpt_exam_rslt_cont varchar(4000)  , -- 외과병리검사결과내용
+	crtn_dt timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP , -- 생성일시
+	CONSTRAINT clcn_exam_sgpt_pk PRIMARY KEY (hosp_cd, pt_sbst_no, srgc_ptem_ymd, srgc_ptem_seq)
+);
+COMMENT ON TABLE clcn_exam_sgpt IS '대장암_검사_외과병리';
+
+-- Column comments
+COMMENT ON COLUMN clcn_exam_sgpt.hosp_cd IS '병원코드' ;
+COMMENT ON COLUMN clcn_exam_sgpt.pt_sbst_no IS '환자대체번호' ;
+COMMENT ON COLUMN clcn_exam_sgpt.srgc_ptem_ymd IS '외과병리검사일자' ;
+COMMENT ON COLUMN clcn_exam_sgpt.srgc_ptem_seq IS '외과병리검사순번' ;
+COMMENT ON COLUMN clcn_exam_sgpt.sgpt_read_ymd IS '외과병리판독일자' ;
+COMMENT ON COLUMN clcn_exam_sgpt.sgpt_hvst_site_cont IS '외과병리채취부위내용' ;
+COMMENT ON COLUMN clcn_exam_sgpt.sgpt_tumr_loca_spcd IS '외과병리종양위치구분코드' ;
+COMMENT ON COLUMN clcn_exam_sgpt.sgpt_tumr_loca_spnm IS '외과병리종양위치구분명' ;
+COMMENT ON COLUMN clcn_exam_sgpt.sgpt_coln_tumr_dtlc_spcd IS '외과병리결장종양세부위치구분코드' ;
+COMMENT ON COLUMN clcn_exam_sgpt.sgpt_coln_tumr_dtlc_spnm IS '외과병리결장종양세부위치구분명' ;
+COMMENT ON COLUMN clcn_exam_sgpt.sgpt_rctm_tumr_dtlc_1_spcd IS '외과병리직장종양세부위치1구분코드' ;
+COMMENT ON COLUMN clcn_exam_sgpt.sgpt_rctm_tumr_dtlc_1_spnm IS '외과병리직장종양세부위치1구분명' ;
+COMMENT ON COLUMN clcn_exam_sgpt.sgpt_rctm_tumr_dtlc_2_spcd IS '외과병리직장종양세부위치2구분코드' ;
+COMMENT ON COLUMN clcn_exam_sgpt.sgpt_rctm_tumr_dtlc_2_spnm IS '외과병리직장종양세부위치2구분명' ;
+COMMENT ON COLUMN clcn_exam_sgpt.srgc_ptem_rslt_tumr_cnt IS '외과병리검사결과종양수' ;
+COMMENT ON COLUMN clcn_exam_sgpt.tumr_wdth_lnth_vl IS '종양가로길이값' ;
+COMMENT ON COLUMN clcn_exam_sgpt.tumr_lgtd_lnth_vl IS '종양세로길이값' ;
+COMMENT ON COLUMN clcn_exam_sgpt.tumr_hght_vl IS '종양높이값' ;
+COMMENT ON COLUMN clcn_exam_sgpt.tumr_max_diam_vl IS '종양최대직경값' ;
+COMMENT ON COLUMN clcn_exam_sgpt.htlg_diag_cd IS '조직학적진단코드' ;
+COMMENT ON COLUMN clcn_exam_sgpt.htlg_diag_nm IS '조직학적진단명' ;
+COMMENT ON COLUMN clcn_exam_sgpt.htlg_grcd IS '조직학적등급코드' ;
+COMMENT ON COLUMN clcn_exam_sgpt.htlg_grnm IS '조직학적등급명' ;
+COMMENT ON COLUMN clcn_exam_sgpt.tumr_redc_grcd IS '종양축소등급코드' ;
+COMMENT ON COLUMN clcn_exam_sgpt.tumr_redc_grnm IS '종양축소등급명' ;
+COMMENT ON COLUMN clcn_exam_sgpt.gros_tpcd IS 'GROSS유형코드' ;
+COMMENT ON COLUMN clcn_exam_sgpt.gros_tpnm IS 'GROSS유형명' ;
+COMMENT ON COLUMN clcn_exam_sgpt.tumr_bndr_frm_spcd IS '종양경계형태구분코드' ;
+COMMENT ON COLUMN clcn_exam_sgpt.tumr_bndr_frm_spnm IS '종양경계형태구분명' ;
+COMMENT ON COLUMN clcn_exam_sgpt.lymp_inva_ex_yn_spcd IS '림프성침윤존재여부구분코드' ;
+COMMENT ON COLUMN clcn_exam_sgpt.lymp_inva_ex_yn_spnm IS '림프성침윤존재여부구분명' ;
+COMMENT ON COLUMN clcn_exam_sgpt.vasc_inva_ex_yn_spcd IS '혈관성침윤존재여부구분코드' ;
+COMMENT ON COLUMN clcn_exam_sgpt.vasc_inva_ex_yn_spnm IS '혈관성침윤존재여부구분명' ;
+COMMENT ON COLUMN clcn_exam_sgpt.nerv_prex_ex_yn_spcd IS '신경주위침윤존재여부구분코드' ;
+COMMENT ON COLUMN clcn_exam_sgpt.nerv_prex_ex_yn_spnm IS '신경주위침윤존재여부구분명' ;
+COMMENT ON COLUMN clcn_exam_sgpt.inva_dgre_cd IS '침윤정도코드' ;
+COMMENT ON COLUMN clcn_exam_sgpt.inva_dgre_nm IS '침윤정도명' ;
+COMMENT ON COLUMN clcn_exam_sgpt.tumr_deps_yn_spcd IS '종양침착여부구분코드' ;
+COMMENT ON COLUMN clcn_exam_sgpt.tumr_deps_yn_spnm IS '종양침착여부구분명' ;
+COMMENT ON COLUMN clcn_exam_sgpt.tumr_necr_ex_yn_spcd IS '종양괴사존재여부구분코드' ;
+COMMENT ON COLUMN clcn_exam_sgpt.tumr_necr_ex_yn_spnm IS '종양괴사존재여부구분명' ;
+COMMENT ON COLUMN clcn_exam_sgpt.srmg_sfmg_mrgn_lnth_vl IS '수술절제면안전경계면길이값' ;
+COMMENT ON COLUMN clcn_exam_sgpt.oprt_pmrg_rlcr_invl_yn_spcd IS '수술근위절제면잔존암포함여부구분코드' ;
+COMMENT ON COLUMN clcn_exam_sgpt.oprt_pmrg_rlcr_invl_yn_spnm IS '수술근위절제면잔존암포함여부구분명' ;
+COMMENT ON COLUMN clcn_exam_sgpt.oprt_dmrg_rlcr_invl_yn_spcd IS '수술원위절제면잔존암포함여부구분코드' ;
+COMMENT ON COLUMN clcn_exam_sgpt.oprt_dmrg_rlcr_invl_yn_spnm IS '수술원위절제면잔존암포함여부구분명' ;
+COMMENT ON COLUMN clcn_exam_sgpt.oprt_dmrg_size_vl IS '수술원위절제면크기값' ;
+COMMENT ON COLUMN clcn_exam_sgpt.radi_rsmg_invl_yn_spcd IS '방사절제연포함여부구분코드' ;
+COMMENT ON COLUMN clcn_exam_sgpt.radi_rsmg_invl_yn_spnm IS '방사절제연포함여부구분명' ;
+COMMENT ON COLUMN clcn_exam_sgpt.tumr_budd_ex_yn_spcd IS '종양발아존재여부구분코드' ;
+COMMENT ON COLUMN clcn_exam_sgpt.tumr_budd_ex_yn_spnm IS '종양발아존재여부구분명' ;
+COMMENT ON COLUMN clcn_exam_sgpt.mltc_tumr_spcd IS '다발성종양구분코드' ;
+COMMENT ON COLUMN clcn_exam_sgpt.mltc_tumr_spnm IS '다발성종양구분명' ;
+COMMENT ON COLUMN clcn_exam_sgpt.tme_qlt_dgre_spcd IS 'TMEQUALITY정도구분코드' ;
+COMMENT ON COLUMN clcn_exam_sgpt.tme_qlt_dgre_spnm IS 'TMEQUALITY정도구분명' ;
+COMMENT ON COLUMN clcn_exam_sgpt.totl_ln_cnt IS '총림프절수' ;
+COMMENT ON COLUMN clcn_exam_sgpt.pstv_ln_cnt IS '양성림프절수' ;
+COMMENT ON COLUMN clcn_exam_sgpt.ajcc_yr IS 'AJCC년도' ;
+COMMENT ON COLUMN clcn_exam_sgpt.afop_path_tnm_stag_vl IS '수술후병리TNM병기값' ;
+COMMENT ON COLUMN clcn_exam_sgpt.afop_path_t_stag_vl IS '수술후병리T병기값' ;
+COMMENT ON COLUMN clcn_exam_sgpt.afop_path_n_stag_vl IS '수술후병리N병기값' ;
+COMMENT ON COLUMN clcn_exam_sgpt.afop_path_m_stag_vl IS '수술후병리M병기값' ;
+COMMENT ON COLUMN clcn_exam_sgpt.sgpt_exam_rslt_cont IS '외과병리검사결과내용' ;
+COMMENT ON COLUMN clcn_exam_sgpt.crtn_dt IS '생성일시' ;
+
+
+-- 15.대장암_치료_수혈
+-- 대장암_치료_수혈 테이블 생성 스크립트 
+
+-- DROP TABLE clcn_trtm_bltr;
+
+CREATE TABLE clcn_trtm_bltr (
+	hosp_cd varchar(20) NOT NULL , -- 병원코드
+	pt_sbst_no varchar(10) NOT NULL , -- 환자대체번호
+	bltr_prsc_ymd varchar(8) NOT NULL , -- 수혈처방일자
+	bltr_prsc_seq numeric(3) NOT NULL , -- 수혈처방순번
+	blpt_kncd varchar(20) NOT NULL , -- 혈액제제종류코드
+	blpt_knnm varchar(200) NOT NULL , -- 혈액제제종류명
+	blpt_cd varchar(20) NOT NULL , -- 혈액제제코드
+	blpt_nm varchar(200) NOT NULL , -- 혈액제제명
+	blpt_capa numeric(5)  , -- 혈액제제용량
+	bltr_pack_cnt numeric(3) NOT NULL , -- 수혈팩수
+	bltr_totl_qty numeric(8)  , -- 수혈총량
+	crtn_dt timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP , -- 생성일시
+	CONSTRAINT clcn_trtm_bltr_pk PRIMARY KEY (hosp_cd, pt_sbst_no, bltr_prsc_ymd, bltr_prsc_seq)
+);
+COMMENT ON TABLE clcn_trtm_bltr IS '대장암_치료_수혈';
+
+-- Column comments
+COMMENT ON COLUMN clcn_trtm_bltr.hosp_cd IS '병원코드' ;
+COMMENT ON COLUMN clcn_trtm_bltr.pt_sbst_no IS '환자대체번호' ;
+COMMENT ON COLUMN clcn_trtm_bltr.bltr_prsc_ymd IS '수혈처방일자' ;
+COMMENT ON COLUMN clcn_trtm_bltr.bltr_prsc_seq IS '수혈처방순번' ;
+COMMENT ON COLUMN clcn_trtm_bltr.blpt_kncd IS '혈액제제종류코드' ;
+COMMENT ON COLUMN clcn_trtm_bltr.blpt_knnm IS '혈액제제종류명' ;
+COMMENT ON COLUMN clcn_trtm_bltr.blpt_cd IS '혈액제제코드' ;
+COMMENT ON COLUMN clcn_trtm_bltr.blpt_nm IS '혈액제제명' ;
+COMMENT ON COLUMN clcn_trtm_bltr.blpt_capa IS '혈액제제용량' ;
+COMMENT ON COLUMN clcn_trtm_bltr.bltr_pack_cnt IS '수혈팩수' ;
+COMMENT ON COLUMN clcn_trtm_bltr.bltr_totl_qty IS '수혈총량' ;
+COMMENT ON COLUMN clcn_trtm_bltr.crtn_dt IS '생성일시' ;
+
+
+
+-- 16.대장암_진단_수술후합병증
+-- 대장암_진단_수술후합병증 테이블 생성 스크립트 
+
+-- DROP TABLE clcn_diag_afoc;
+
+CREATE TABLE clcn_diag_afoc (
+	hosp_cd varchar(20) NOT NULL , -- 병원코드
+	pt_sbst_no varchar(10) NOT NULL , -- 환자대체번호
+	comp_ocrn_oprt_ymd varchar(8) NOT NULL , -- 합병증발생수술일자
+	comp_ocrn_oprt_seq numeric(3) NOT NULL , -- 합병증발생수술순번
+	afoc_clcd varchar(20)  , -- 수술후합병증분류코드
+	afoc_clnm varchar(200)  , -- 수술후합병증분류명
+	afoc_cd varchar(20)  , -- 수술후합병증코드
+	afoc_nm varchar(200)  , -- 수술후합병증명
+	afop_etc_comp_cont varchar(4000)  , -- 수술후기타합병증내용
+	afoc_trtm_mtcd varchar(20)  , -- 수술후합병증치료방법코드
+	afoc_trtm_mtnm varchar(200)  , -- 수술후합병증치료방법명
+	crtn_dt timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP , -- 생성일시
+	CONSTRAINT clcn_diag_afoc_pk PRIMARY KEY (hosp_cd, pt_sbst_no, comp_ocrn_oprt_ymd, comp_ocrn_oprt_seq)
+);
+COMMENT ON TABLE clcn_diag_afoc IS '대장암_진단_수술후합병증';
+
+-- Column comments
+COMMENT ON COLUMN clcn_diag_afoc.hosp_cd IS '병원코드' ;
+COMMENT ON COLUMN clcn_diag_afoc.pt_sbst_no IS '환자대체번호' ;
+COMMENT ON COLUMN clcn_diag_afoc.comp_ocrn_oprt_ymd IS '합병증발생수술일자' ;
+COMMENT ON COLUMN clcn_diag_afoc.comp_ocrn_oprt_seq IS '합병증발생수술순번' ;
+COMMENT ON COLUMN clcn_diag_afoc.afoc_clcd IS '수술후합병증분류코드' ;
+COMMENT ON COLUMN clcn_diag_afoc.afoc_clnm IS '수술후합병증분류명' ;
+COMMENT ON COLUMN clcn_diag_afoc.afoc_cd IS '수술후합병증코드' ;
+COMMENT ON COLUMN clcn_diag_afoc.afoc_nm IS '수술후합병증명' ;
+COMMENT ON COLUMN clcn_diag_afoc.afop_etc_comp_cont IS '수술후기타합병증내용' ;
+COMMENT ON COLUMN clcn_diag_afoc.afoc_trtm_mtcd IS '수술후합병증치료방법코드' ;
+COMMENT ON COLUMN clcn_diag_afoc.afoc_trtm_mtnm IS '수술후합병증치료방법명' ;
+COMMENT ON COLUMN clcn_diag_afoc.crtn_dt IS '생성일시' ;
+
+
+-- 17.대장암_치료_약제성분
+-- 대장암_치료_약제성분 테이블 생성 스크립트 
+
+-- DROP TABLE clcn_trtm_drin;
+
+CREATE TABLE clcn_trtm_drin (
+	hosp_cd varchar(20) NOT NULL , -- 병원코드
+	pt_sbst_no varchar(10) NOT NULL , -- 환자대체번호
+	drug_prsc_ymd varchar(8) NOT NULL , -- 약제처방일자
+	drug_prsc_seq numeric(3) NOT NULL , -- 약제처방순번
+	drug_clcd varchar(20) NOT NULL , -- 약제분류코드
+	drug_clnm varchar(200) NOT NULL , -- 약제분류명
+	andr_spcd varchar(20)  , -- 항암약제구분코드
+	andr_spnm varchar(200)  , -- 항암약제구분명
+	drin_kncd varchar(20) NOT NULL , -- 약제성분종류코드
+	drin_knnm varchar(200) NOT NULL , -- 약제성분종류명
+	drin_cd varchar(20)  , -- 약제성분코드
+	drin_nm varchar(200)  , -- 약제성분명
+	drin_smct_cd varchar(200)  , -- 약제성분SNOMEDCT코드
+	drin_smct_nm varchar(1000)  , -- 약제성분SNOMEDCT명
+	drug_cd varchar(20) NOT NULL , -- 약제코드
+	drug_nm varchar(200) NOT NULL , -- 약제명
+	drug_edi_cd varchar(20)  , -- 약제EDI코드
+	drug_edi_nm varchar(200)  , -- 약제EDI명
+	drug_atc_cd varchar(20)  , -- 약제ATC코드
+	drug_atc_nm varchar(200)  , -- 약제ATC명
+	drug_rxnm_cd varchar(20)  , -- 약제RXNORM코드
+	drug_rxnm_nm varchar(200)  , -- 약제RXNORM명
+	drug_prsc_capa varchar(50)  , -- 약제처방용량
+	drug_prsc_dcnt numeric(6)  , -- 약제처방일수
+	drug_injc_pth_cd varchar(20)  , -- 약제투여경로코드
+	drug_injc_pth_nm varchar(200)  , -- 약제투여경로명
+	drug_prsc_capa_unit_cd varchar(20)  , -- 약제처방용량단위코드
+	drug_prsc_capa_unit_nm varchar(200)  , -- 약제처방용량단위명
+	drug_mdct_dtrn_mcnt numeric(10,3)  , -- 약제투약기간월수
+	crtn_dt timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP , -- 생성일시
+	CONSTRAINT clcn_trtm_drin_pk PRIMARY KEY (hosp_cd, pt_sbst_no, drug_prsc_ymd, drug_prsc_seq)
+);
+COMMENT ON TABLE clcn_trtm_drin IS '대장암_치료_약제성분';
+
+-- Column comments
+COMMENT ON COLUMN clcn_trtm_drin.hosp_cd IS '병원코드' ;
+COMMENT ON COLUMN clcn_trtm_drin.pt_sbst_no IS '환자대체번호' ;
+COMMENT ON COLUMN clcn_trtm_drin.drug_prsc_ymd IS '약제처방일자' ;
+COMMENT ON COLUMN clcn_trtm_drin.drug_prsc_seq IS '약제처방순번' ;
+COMMENT ON COLUMN clcn_trtm_drin.drug_clcd IS '약제분류코드' ;
+COMMENT ON COLUMN clcn_trtm_drin.drug_clnm IS '약제분류명' ;
+COMMENT ON COLUMN clcn_trtm_drin.andr_spcd IS '항암약제구분코드' ;
+COMMENT ON COLUMN clcn_trtm_drin.andr_spnm IS '항암약제구분명' ;
+COMMENT ON COLUMN clcn_trtm_drin.drin_kncd IS '약제성분종류코드' ;
+COMMENT ON COLUMN clcn_trtm_drin.drin_knnm IS '약제성분종류명' ;
+COMMENT ON COLUMN clcn_trtm_drin.drin_cd IS '약제성분코드' ;
+COMMENT ON COLUMN clcn_trtm_drin.drin_nm IS '약제성분명' ;
+COMMENT ON COLUMN clcn_trtm_drin.drin_smct_cd IS '약제성분SNOMEDCT코드' ;
+COMMENT ON COLUMN clcn_trtm_drin.drin_smct_nm IS '약제성분SNOMEDCT명' ;
+COMMENT ON COLUMN clcn_trtm_drin.drug_cd IS '약제코드' ;
+COMMENT ON COLUMN clcn_trtm_drin.drug_nm IS '약제명' ;
+COMMENT ON COLUMN clcn_trtm_drin.drug_edi_cd IS '약제EDI코드' ;
+COMMENT ON COLUMN clcn_trtm_drin.drug_edi_nm IS '약제EDI명' ;
+COMMENT ON COLUMN clcn_trtm_drin.drug_atc_cd IS '약제ATC코드' ;
+COMMENT ON COLUMN clcn_trtm_drin.drug_atc_nm IS '약제ATC명' ;
+COMMENT ON COLUMN clcn_trtm_drin.drug_rxnm_cd IS '약제RXNORM코드' ;
+COMMENT ON COLUMN clcn_trtm_drin.drug_rxnm_nm IS '약제RXNORM명' ;
+COMMENT ON COLUMN clcn_trtm_drin.drug_prsc_capa IS '약제처방용량' ;
+COMMENT ON COLUMN clcn_trtm_drin.drug_prsc_dcnt IS '약제처방일수' ;
+COMMENT ON COLUMN clcn_trtm_drin.drug_injc_pth_cd IS '약제투여경로코드' ;
+COMMENT ON COLUMN clcn_trtm_drin.drug_injc_pth_nm IS '약제투여경로명' ;
+COMMENT ON COLUMN clcn_trtm_drin.drug_prsc_capa_unit_cd IS '약제처방용량단위코드' ;
+COMMENT ON COLUMN clcn_trtm_drin.drug_prsc_capa_unit_nm IS '약제처방용량단위명' ;
+COMMENT ON COLUMN clcn_trtm_drin.drug_mdct_dtrn_mcnt IS '약제투약기간월수' ;
+COMMENT ON COLUMN clcn_trtm_drin.crtn_dt IS '생성일시' ;
+
+
+-- 18.대장암_치료_항암요법
+-- 대장암_치료_항암요법 테이블 생성 스크립트 
+
+-- DROP TABLE clcn_trtm_antp;
+
+CREATE TABLE clcn_trtm_antp (
+	hosp_cd varchar(20) NOT NULL , -- 병원코드
+	pt_sbst_no varchar(10) NOT NULL , -- 환자대체번호
+	antp_strt_ymd varchar(8) NOT NULL , -- 항암요법시작일자
+	antp_seq numeric(3) NOT NULL , -- 항암요법순번
+	antp_end_ymd varchar(8) NOT NULL , -- 항암요법종료일자
+	antp_trtm_prps_cd varchar(20)  , -- 항암요법치료목적코드
+	antp_trtm_prps_nm varchar(200)  , -- 항암요법치료목적명
+	antp_nm varchar(200)  , -- 항암요법명
+	antp_totl_cycl_cnt numeric(3)  , -- 항암요법총주기수
+	antp_line_cnt numeric(3)  , -- 항암요법라인수
+	antp_temp_stop_yn_unid_spcd varchar(20)  , -- 항암요법임시중단여부확인불가구분코드
+	antp_temp_stop_yn_unid_spnm varchar(50)  , -- 항암요법임시중단여부확인불가구분명
+	antp_end_resn_cd varchar(20)  , -- 항암요법종료이유코드
+	antp_end_resn_nm varchar(200)  , -- 항암요법종료이유명
+	antp_asmt_ymd varchar(8)  , -- 항암요법평가일자
+	antp_asmt_item_cd varchar(20)  , -- 항암요법평가항목코드
+	antp_asmt_item_nm varchar(200)  , -- 항암요법평가항목명
+	antp_asmt_item_etc_cont varchar(4000)  , -- 항암요법평가항목기타내용
+	antp_seff_cd varchar(20)  , -- 항암요법부작용코드
+	antp_seff_nm varchar(200)  , -- 항암요법부작용명
+	antp_seff_etc_cont varchar(4000)  , -- 항암요법부작용기타내용
+	antp_seff_grcd varchar(20)  , -- 항암요법부작용등급코드
+	antp_seff_grnm varchar(200)  , -- 항암요법부작용등급명
+	antp_seff_grad_etc_cont varchar(4000)  , -- 항암요법부작용등급기타내용
+	crtn_dt timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP , -- 생성일시
+	CONSTRAINT clcn_trtm_antp_pk PRIMARY KEY (hosp_cd, pt_sbst_no, antp_strt_ymd, antp_seq)
+);
+COMMENT ON TABLE clcn_trtm_antp IS '대장암_치료_항암요법';
+
+-- Column comments
+COMMENT ON COLUMN clcn_trtm_antp.hosp_cd IS '병원코드' ;
+COMMENT ON COLUMN clcn_trtm_antp.pt_sbst_no IS '환자대체번호' ;
+COMMENT ON COLUMN clcn_trtm_antp.antp_strt_ymd IS '항암요법시작일자' ;
+COMMENT ON COLUMN clcn_trtm_antp.antp_seq IS '항암요법순번' ;
+COMMENT ON COLUMN clcn_trtm_antp.antp_end_ymd IS '항암요법종료일자' ;
+COMMENT ON COLUMN clcn_trtm_antp.antp_trtm_prps_cd IS '항암요법치료목적코드' ;
+COMMENT ON COLUMN clcn_trtm_antp.antp_trtm_prps_nm IS '항암요법치료목적명' ;
+COMMENT ON COLUMN clcn_trtm_antp.antp_nm IS '항암요법명' ;
+COMMENT ON COLUMN clcn_trtm_antp.antp_totl_cycl_cnt IS '항암요법총주기수' ;
+COMMENT ON COLUMN clcn_trtm_antp.antp_line_cnt IS '항암요법라인수' ;
+COMMENT ON COLUMN clcn_trtm_antp.antp_temp_stop_yn_unid_spcd IS '항암요법임시중단여부확인불가구분코드' ;
+COMMENT ON COLUMN clcn_trtm_antp.antp_temp_stop_yn_unid_spnm IS '항암요법임시중단여부확인불가구분명' ;
+COMMENT ON COLUMN clcn_trtm_antp.antp_end_resn_cd IS '항암요법종료이유코드' ;
+COMMENT ON COLUMN clcn_trtm_antp.antp_end_resn_nm IS '항암요법종료이유명' ;
+COMMENT ON COLUMN clcn_trtm_antp.antp_asmt_ymd IS '항암요법평가일자' ;
+COMMENT ON COLUMN clcn_trtm_antp.antp_asmt_item_cd IS '항암요법평가항목코드' ;
+COMMENT ON COLUMN clcn_trtm_antp.antp_asmt_item_nm IS '항암요법평가항목명' ;
+COMMENT ON COLUMN clcn_trtm_antp.antp_asmt_item_etc_cont IS '항암요법평가항목기타내용' ;
+COMMENT ON COLUMN clcn_trtm_antp.antp_seff_cd IS '항암요법부작용코드' ;
+COMMENT ON COLUMN clcn_trtm_antp.antp_seff_nm IS '항암요법부작용명' ;
+COMMENT ON COLUMN clcn_trtm_antp.antp_seff_etc_cont IS '항암요법부작용기타내용' ;
+COMMENT ON COLUMN clcn_trtm_antp.antp_seff_grcd IS '항암요법부작용등급코드' ;
+COMMENT ON COLUMN clcn_trtm_antp.antp_seff_grnm IS '항암요법부작용등급명' ;
+COMMENT ON COLUMN clcn_trtm_antp.antp_seff_grad_etc_cont IS '항암요법부작용등급기타내용' ;
+COMMENT ON COLUMN clcn_trtm_antp.crtn_dt IS '생성일시' ;
+
+
+-- 19.대장암_치료_방사선
+-- 대장암_치료_방사선 테이블 생성 스크립트 
+
+-- DROP TABLE clcn_trtm_rd;
+
+CREATE TABLE clcn_trtm_rd (
+	hosp_cd varchar(20) NOT NULL , -- 병원코드
+	pt_sbst_no varchar(10) NOT NULL , -- 환자대체번호
+	rdt_prsc_ymd varchar(8) NOT NULL , -- 방사선치료처방일자
+	rdt_prsc_seq numeric(3) NOT NULL , -- 방사선치료처방순번
+	rdt_kncd varchar(20) NOT NULL , -- 방사선치료종류코드
+	rdt_knnm varchar(200) NOT NULL , -- 방사선치료종류명
+	rdt_cd varchar(20) NOT NULL , -- 방사선치료코드
+	rdt_nm varchar(200) NOT NULL , -- 방사선치료명
+	rdt_edi_cd varchar(20)  , -- 방사선치료EDI코드
+	rdt_edi_nm varchar(200)  , -- 방사선치료EDI명
+	rdt_smct_cd varchar(200)  , -- 방사선치료SNOMEDCT코드
+	rdt_smct_nm varchar(1000)  , -- 방사선치료SNOMEDCT명
+	rdt_prps_cd varchar(20)  , -- 방사선치료목적코드
+	rdt_prps_nm varchar(200)  , -- 방사선치료목적명
+	rdt_site_cd varchar(20) NOT NULL , -- 방사선치료부위코드
+	rdt_site_nm varchar(200) NOT NULL , -- 방사선치료부위명
+	rd_impl_nt numeric(5) NOT NULL , -- 방사선시행횟수
+	rd_gy numeric(10,3) NOT NULL , -- 방사선선량
+	rd_totl_gy numeric(10,3) NOT NULL , -- 방사선총선량
+	rdt_asmt_ymd varchar(8)  , -- 방사선치료평가일자
+	rdt_asmt_item_cd varchar(20)  , -- 방사선치료평가항목코드
+	rdt_asmt_item_nm varchar(200)  , -- 방사선치료평가항목명
+	rdt_asmt_item_etc_cont varchar(4000)  , -- 방사선치료평가항목기타내용
+	rdt_seff_perd_spcd varchar(20)  , -- 방사선치료부작용시기구분코드
+	rdt_seff_perd_spnm varchar(200)  , -- 방사선치료부작용시기구분명
+	rdt_seff_kncd varchar(20)  , -- 방사선치료부작용종류코드
+	rdt_seff_knnm varchar(200)  , -- 방사선치료부작용종류명
+	rdt_seff_kind_etc_cont varchar(4000)  , -- 방사선치료부작용종류기타내용
+	rdt_seff_grcd varchar(20)  , -- 방사선치료부작용등급코드
+	rdt_seff_grnm varchar(200)  , -- 방사선치료부작용등급명
+	rdt_seff_grad_etc_cont varchar(4000)  , -- 방사선치료부작용등급기타내용
+	crtn_dt timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP , -- 생성일시
+	CONSTRAINT clcn_trtm_rd_pk PRIMARY KEY (hosp_cd, pt_sbst_no, rdt_prsc_ymd, rdt_prsc_seq)
+);
+COMMENT ON TABLE clcn_trtm_rd IS '대장암_치료_방사선';
+
+-- Column comments
+COMMENT ON COLUMN clcn_trtm_rd.hosp_cd IS '병원코드' ;
+COMMENT ON COLUMN clcn_trtm_rd.pt_sbst_no IS '환자대체번호' ;
+COMMENT ON COLUMN clcn_trtm_rd.rdt_prsc_ymd IS '방사선치료처방일자' ;
+COMMENT ON COLUMN clcn_trtm_rd.rdt_prsc_seq IS '방사선치료처방순번' ;
+COMMENT ON COLUMN clcn_trtm_rd.rdt_kncd IS '방사선치료종류코드' ;
+COMMENT ON COLUMN clcn_trtm_rd.rdt_knnm IS '방사선치료종류명' ;
+COMMENT ON COLUMN clcn_trtm_rd.rdt_cd IS '방사선치료코드' ;
+COMMENT ON COLUMN clcn_trtm_rd.rdt_nm IS '방사선치료명' ;
+COMMENT ON COLUMN clcn_trtm_rd.rdt_edi_cd IS '방사선치료EDI코드' ;
+COMMENT ON COLUMN clcn_trtm_rd.rdt_edi_nm IS '방사선치료EDI명' ;
+COMMENT ON COLUMN clcn_trtm_rd.rdt_smct_cd IS '방사선치료SNOMEDCT코드' ;
+COMMENT ON COLUMN clcn_trtm_rd.rdt_smct_nm IS '방사선치료SNOMEDCT명' ;
+COMMENT ON COLUMN clcn_trtm_rd.rdt_prps_cd IS '방사선치료목적코드' ;
+COMMENT ON COLUMN clcn_trtm_rd.rdt_prps_nm IS '방사선치료목적명' ;
+COMMENT ON COLUMN clcn_trtm_rd.rdt_site_cd IS '방사선치료부위코드' ;
+COMMENT ON COLUMN clcn_trtm_rd.rdt_site_nm IS '방사선치료부위명' ;
+COMMENT ON COLUMN clcn_trtm_rd.rd_impl_nt IS '방사선시행횟수' ;
+COMMENT ON COLUMN clcn_trtm_rd.rd_gy IS '방사선선량' ;
+COMMENT ON COLUMN clcn_trtm_rd.rd_totl_gy IS '방사선총선량' ;
+COMMENT ON COLUMN clcn_trtm_rd.rdt_asmt_ymd IS '방사선치료평가일자' ;
+COMMENT ON COLUMN clcn_trtm_rd.rdt_asmt_item_cd IS '방사선치료평가항목코드' ;
+COMMENT ON COLUMN clcn_trtm_rd.rdt_asmt_item_nm IS '방사선치료평가항목명' ;
+COMMENT ON COLUMN clcn_trtm_rd.rdt_asmt_item_etc_cont IS '방사선치료평가항목기타내용' ;
+COMMENT ON COLUMN clcn_trtm_rd.rdt_seff_perd_spcd IS '방사선치료부작용시기구분코드' ;
+COMMENT ON COLUMN clcn_trtm_rd.rdt_seff_perd_spnm IS '방사선치료부작용시기구분명' ;
+COMMENT ON COLUMN clcn_trtm_rd.rdt_seff_kncd IS '방사선치료부작용종류코드' ;
+COMMENT ON COLUMN clcn_trtm_rd.rdt_seff_knnm IS '방사선치료부작용종류명' ;
+COMMENT ON COLUMN clcn_trtm_rd.rdt_seff_kind_etc_cont IS '방사선치료부작용종류기타내용' ;
+COMMENT ON COLUMN clcn_trtm_rd.rdt_seff_grcd IS '방사선치료부작용등급코드' ;
+COMMENT ON COLUMN clcn_trtm_rd.rdt_seff_grnm IS '방사선치료부작용등급명' ;
+COMMENT ON COLUMN clcn_trtm_rd.rdt_seff_grad_etc_cont IS '방사선치료부작용등급기타내용' ;
+COMMENT ON COLUMN clcn_trtm_rd.crtn_dt IS '생성일시' ;
+
+
+-- 20.대장암_추적관찰_재발
+-- 대장암_추적관찰_재발 테이블 생성 스크립트 
+
+-- DROP TABLE clcn_fuor_rlps;
+
+CREATE TABLE clcn_fuor_rlps (
+	hosp_cd varchar(20) NOT NULL , -- 병원코드
+	pt_sbst_no varchar(10) NOT NULL , -- 환자대체번호
+	rldg_ymd varchar(8) NOT NULL , -- 재발진단일자
+	rldg_seq numeric(3) NOT NULL , -- 재발진단순번
+	rldg_mtcd varchar(20)  , -- 재발진단방법코드
+	rldg_mtnm varchar(200)  , -- 재발진단방법명
+	rlps_site_cd varchar(20)  , -- 재발부위코드
+	rlps_site_nm varchar(200)  , -- 재발부위명
+	rlps_kncd varchar(20)  , -- 재발종류코드
+	rlps_knnm varchar(200)  , -- 재발종류명
+	rlps_trtm_cont varchar(4000)  , -- 재발치료내용
+	rlps_trtm_mtcd varchar(20)  , -- 재발치료방법코드
+	rlps_trtm_mtnm varchar(200)  , -- 재발치료방법명
+crtn_dt timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP , -- 생성일시
+	CONSTRAINT clcn_fuor_rlps_pk PRIMARY KEY (hosp_cd, pt_sbst_no, rldg_ymd, rldg_seq)
+);
+COMMENT ON TABLE clcn_fuor_rlps IS '대장암_추적관찰_재발';
+
+-- Column comments
+
+COMMENT ON COLUMN clcn_fuor_rlps.hosp_cd IS '병원코드' ;
+COMMENT ON COLUMN clcn_fuor_rlps.pt_sbst_no IS '환자대체번호' ;
+COMMENT ON COLUMN clcn_fuor_rlps.rldg_ymd IS '재발진단일자' ;
+COMMENT ON COLUMN clcn_fuor_rlps.rldg_seq IS '재발진단순번' ;
+COMMENT ON COLUMN clcn_fuor_rlps.rldg_mtcd IS '재발진단방법코드' ;
+COMMENT ON COLUMN clcn_fuor_rlps.rldg_mtnm IS '재발진단방법명' ;
+COMMENT ON COLUMN clcn_fuor_rlps.rlps_site_cd IS '재발부위코드' ;
+COMMENT ON COLUMN clcn_fuor_rlps.rlps_site_nm IS '재발부위명' ;
+COMMENT ON COLUMN clcn_fuor_rlps.rlps_kncd IS '재발종류코드' ;
+COMMENT ON COLUMN clcn_fuor_rlps.rlps_knnm IS '재발종류명' ;
+COMMENT ON COLUMN clcn_fuor_rlps.rlps_trtm_cont IS '재발치료내용' ;
+COMMENT ON COLUMN clcn_fuor_rlps.rlps_trtm_mtcd IS '재발치료방법코드' ;
+COMMENT ON COLUMN clcn_fuor_rlps.rlps_trtm_mtnm IS '재발치료방법명' ;
+COMMENT ON COLUMN clcn_fuor_rlps.crtn_dt IS '생성일시' ;
+
+
+
