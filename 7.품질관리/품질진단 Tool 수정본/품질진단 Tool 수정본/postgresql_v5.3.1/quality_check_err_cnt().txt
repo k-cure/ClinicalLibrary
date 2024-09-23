@@ -1,0 +1,4752 @@
+CREATE OR REPLACE PROCEDURE quality_check_err_cnt()
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    RULE_ID_VAL VARCHAR(30);
+    TB_NM_VAL VARCHAR(50);
+    COL_NM_VAL VARCHAR(50);
+    TOT_CNT_VAL VARCHAR(50);
+    ERR_CNT_VAL VARCHAR(50);
+    ERR_VALUE_VAL TEXT;
+BEGIN
+    -- 테이블 생성
+    CREATE TABLE IF NOT EXISTS result_quality_check (
+        RULE_ID VARCHAR(30),
+        TB_NM VARCHAR(50),
+        COL_NM VARCHAR(50),
+        TOT_CNT VARCHAR(50),
+        ERR_CNT VARCHAR(50),
+        ERR_VALUE TEXT
+    );
+   
+   CREATE TABLE IF NOT EXISTS quality_check_error_log (
+        SEQ SERIAL PRIMARY KEY,
+        CHK_ID VARCHAR(30),
+        CHK_TIME TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        ERROR_MESSAGE TEXT
+    );
+   
+    BEGIN
+        UPDATE result_quality_check SET err_cnt = NULL AND err_value = NULL WHERE 1=1;
+        COMMIT;
+    END;
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+   SELECT 'ID1002' AS RULE_ID,  
+   'PERSON' AS TB_NM,    
+   'PERSON_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+    FROM YourSchemaName.PERSON A
+    WHERE PERSON_ID IS NULL  
+ INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END; 
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1003' AS RULE_ID,  
+   'PERSON' AS TB_NM,    
+   'PERSON_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.PERSON A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.VISIT_OCCURRENCE B 
+WHERE B.PERSON_ID = A.PERSON_ID )  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( PERSON_ID IS NOT NULL AND LENGTH(CAST(PERSON_ID AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1004' AS RULE_ID,  
+   'PERSON' AS TB_NM,    
+   'PERSON_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.PERSON A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.PROCEDURE_OCCURRENCE B 
+WHERE B.PERSON_ID = A.PERSON_ID )  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( PERSON_ID IS NOT NULL AND LENGTH(CAST(PERSON_ID AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1005' AS RULE_ID,  
+   'PERSON' AS TB_NM,    
+   'PERSON_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.PERSON A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.DEATH B 
+WHERE B.PERSON_ID = A.PERSON_ID 
+AND MAKE_DATE(A.YEAR_OF_BIRTH,A.MONTH_OF_BIRTH,A.DAY_OF_BIRTH) < B.DEATH_DATE )  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( PERSON_ID IS NOT NULL AND LENGTH(CAST(PERSON_ID AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1006' AS RULE_ID,  
+   'PERSON' AS TB_NM,    
+   'GENDER_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.PERSON A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.CONCEPT B 
+WHERE 1=1 and lower(domain_id) = 'gender' and lower(standard_concept) in ('standard', 's'))  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( GENDER_CONCEPT_ID IS NOT NULL AND LENGTH(CAST(GENDER_CONCEPT_ID AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1007' AS RULE_ID,  
+   'PERSON' AS TB_NM,    
+   'GENDER_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+    FROM YourSchemaName.PERSON A
+    WHERE GENDER_CONCEPT_ID IS NULL  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1008' AS RULE_ID,  
+   'PERSON' AS TB_NM,    
+   'YEAR_OF_BIRTH' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.PERSON
+WHERE CASE WHEN REGEXP_MATCH(CAST(YEAR_OF_BIRTH AS VARCHAR), '^[0-9]{4}$') IS NULL
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( YEAR_OF_BIRTH IS NOT NULL AND LENGTH(CAST(YEAR_OF_BIRTH AS VARCHAR))>0 )
+ INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1009' AS RULE_ID,  
+   'PERSON' AS TB_NM,    
+   'YEAR_OF_BIRTH' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+    FROM YourSchemaName.PERSON A
+    WHERE YEAR_OF_BIRTH IS NULL  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1010' AS RULE_ID,  
+   'PERSON' AS TB_NM,    
+   'YEAR_OF_BIRTH' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.PERSON A
+WHERE YEAR_OF_BIRTH IS NOT NULL AND LENGTH(CAST(YEAR_OF_BIRTH AS VARCHAR)) > 0 
+AND YEAR_OF_BIRTH NOT BETWEEN 1900 AND EXTRACT(YEAR FROM CURRENT_DATE)
+  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1011' AS RULE_ID,  
+   'PERSON' AS TB_NM,    
+   'MONTH_OF_BIRTH' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.PERSON A
+WHERE MONTH_OF_BIRTH IS NOT NULL AND LENGTH(CAST(MONTH_OF_BIRTH AS VARCHAR)) > 0 
+AND MONTH_OF_BIRTH NOT BETWEEN 1 AND 12
+  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1012' AS RULE_ID,  
+   'PERSON' AS TB_NM,    
+   'DAY_OF_BIRTH' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.PERSON A
+WHERE DAY_OF_BIRTH IS NOT NULL AND LENGTH(CAST(DAY_OF_BIRTH AS VARCHAR)) > 0 
+AND DAY_OF_BIRTH NOT BETWEEN 1 AND 31
+  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1014' AS RULE_ID,  
+   'PERSON' AS TB_NM,    
+   'RACE_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.PERSON A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.CONCEPT B 
+WHERE 1=1 and lower(domain_id) = 'race' and lower(standard_concept) in ('standard', 's'))  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( RACE_CONCEPT_ID IS NOT NULL AND LENGTH(CAST(RACE_CONCEPT_ID AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1015' AS RULE_ID,  
+   'PERSON' AS TB_NM,    
+   'RACE_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+    FROM YourSchemaName.PERSON A
+    WHERE RACE_CONCEPT_ID IS NULL  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1016' AS RULE_ID,  
+   'PERSON' AS TB_NM,    
+   'ETHNICITY_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.PERSON A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.CONCEPT B 
+WHERE 1=1 and lower(domain_id) = 'ethnicity' and lower(standard_concept) in ('standard', 's'))  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( ETHNICITY_CONCEPT_ID IS NOT NULL AND LENGTH(CAST(ETHNICITY_CONCEPT_ID AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1017' AS RULE_ID,  
+   'PERSON' AS TB_NM,    
+   'ETHNICITY_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+    FROM YourSchemaName.PERSON A
+    WHERE ETHNICITY_CONCEPT_ID IS NULL  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1018' AS RULE_ID,  
+   'PERSON' AS TB_NM,    
+   'LOCATION_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.PERSON A
+WHERE LOCATION_ID IS NOT NULL AND LENGTH(CAST(LOCATION_ID AS VARCHAR))>0
+AND LOCATION_ID NOT BETWEEN 0 AND 99999  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+
+
+
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1023' AS RULE_ID,  
+   'PERSON' AS TB_NM,    
+   'GENDER_SOURCE_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.PERSON A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.CONCEPT B 
+WHERE B.CONCEPT_ID = A.GENDER_SOURCE_CONCEPT_ID)  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( GENDER_SOURCE_CONCEPT_ID IS NOT NULL AND LENGTH(CAST(GENDER_SOURCE_CONCEPT_ID AS VARCHAR))>0 ) 
+AND GENDER_SOURCE_CONCEPT_ID != 0  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1025' AS RULE_ID,  
+   'PERSON' AS TB_NM,    
+   'RACE_SOURCE_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.PERSON A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.CONCEPT B 
+WHERE B.CONCEPT_ID = A.RACE_SOURCE_CONCEPT_ID)  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( RACE_SOURCE_CONCEPT_ID IS NOT NULL AND LENGTH(CAST(RACE_SOURCE_CONCEPT_ID AS VARCHAR))>0 ) 
+AND RACE_SOURCE_CONCEPT_ID != 0  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1027' AS RULE_ID,  
+   'PERSON' AS TB_NM,    
+   'ETHNICITY_SOURCE_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.PERSON A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.CONCEPT B 
+WHERE B.CONCEPT_ID = A.ETHNICITY_SOURCE_CONCEPT_ID)  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( ETHNICITY_SOURCE_CONCEPT_ID IS NOT NULL AND LENGTH(CAST(ETHNICITY_SOURCE_CONCEPT_ID AS VARCHAR))>0 ) 
+AND ETHNICITY_SOURCE_CONCEPT_ID != 0  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1029' AS RULE_ID,  
+   'OBSERVATION_PERIOD' AS TB_NM,    
+   'OBSERVATION_PERIOD_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+    FROM YourSchemaName.OBSERVATION_PERIOD A
+    WHERE OBSERVATION_PERIOD_ID IS NULL  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1030' AS RULE_ID,  
+   'OBSERVATION_PERIOD' AS TB_NM,    
+   'PERSON_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.OBSERVATION_PERIOD A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.PERSON B 
+WHERE B.PERSON_ID = A.PERSON_ID )  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( PERSON_ID IS NOT NULL AND LENGTH(CAST(PERSON_ID AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1031' AS RULE_ID,  
+   'OBSERVATION_PERIOD' AS TB_NM,    
+   'PERSON_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+    FROM YourSchemaName.OBSERVATION_PERIOD A
+    WHERE PERSON_ID IS NULL  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1032' AS RULE_ID,  
+   'OBSERVATION_PERIOD' AS TB_NM,    
+   'OBSERVATION_PERIOD_START_DATE' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.OBSERVATION_PERIOD A
+WHERE OBSERVATION_PERIOD_START_DATE IS NOT NULL AND LENGTH(CAST(OBSERVATION_PERIOD_START_DATE AS VARCHAR)) > 0 
+AND OBSERVATION_PERIOD_START_DATE > OBSERVATION_PERIOD_END_DATE  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1033' AS RULE_ID,  
+   'OBSERVATION_PERIOD' AS TB_NM,    
+   'OBSERVATION_PERIOD_START_DATE' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+    FROM YourSchemaName.OBSERVATION_PERIOD A
+    WHERE OBSERVATION_PERIOD_START_DATE IS NULL  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1034' AS RULE_ID,  
+   'OBSERVATION_PERIOD' AS TB_NM,    
+   'OBSERVATION_PERIOD_START_DATE' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.OBSERVATION_PERIOD A
+WHERE OBSERVATION_PERIOD_START_DATE IS NOT NULL AND LENGTH(CAST(OBSERVATION_PERIOD_START_DATE AS VARCHAR)) > 0 
+AND OBSERVATION_PERIOD_START_DATE NOT BETWEEN '1950-01-01' AND CURRENT_DATE
+  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1035' AS RULE_ID,  
+   'OBSERVATION_PERIOD' AS TB_NM,    
+   'OBSERVATION_PERIOD_START_DATE' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.OBSERVATION_PERIOD A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.DEATH B 
+WHERE B.PERSON_ID = A.PERSON_ID 
+AND A.OBSERVATION_PERIOD_START_DATE < B.DEATH_DATE )  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( OBSERVATION_PERIOD_START_DATE IS NOT NULL AND LENGTH(CAST(OBSERVATION_PERIOD_START_DATE AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1036' AS RULE_ID,  
+   'OBSERVATION_PERIOD' AS TB_NM,    
+   'OBSERVATION_PERIOD_END_DATE' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.OBSERVATION_PERIOD A
+WHERE OBSERVATION_PERIOD_END_DATE IS NOT NULL AND LENGTH(CAST(OBSERVATION_PERIOD_END_DATE AS VARCHAR)) > 0 
+AND OBSERVATION_PERIOD_END_DATE < OBSERVATION_PERIOD_START_DATE  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1037' AS RULE_ID,  
+   'OBSERVATION_PERIOD' AS TB_NM,    
+   'OBSERVATION_PERIOD_END_DATE' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+    FROM YourSchemaName.OBSERVATION_PERIOD A
+    WHERE OBSERVATION_PERIOD_END_DATE IS NULL  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1038' AS RULE_ID,  
+   'OBSERVATION_PERIOD' AS TB_NM,    
+   'OBSERVATION_PERIOD_END_DATE' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.OBSERVATION_PERIOD A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.DEATH B 
+WHERE B.PERSON_ID = A.PERSON_ID 
+AND A.OBSERVATION_PERIOD_END_DATE < B.DEATH_DATE )  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( OBSERVATION_PERIOD_END_DATE IS NOT NULL AND LENGTH(CAST(OBSERVATION_PERIOD_END_DATE AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1039' AS RULE_ID,  
+   'OBSERVATION_PERIOD' AS TB_NM,    
+   'PERIOD_TYPE_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.OBSERVATION_PERIOD A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.CONCEPT B 
+WHERE 1=1 and lower(domain_id) = 'type concept' and lower(concept_class_id) = 'type concept' and lower(standard_concept) in ('standard', 's'))  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( PERIOD_TYPE_CONCEPT_ID IS NOT NULL AND LENGTH(CAST(PERIOD_TYPE_CONCEPT_ID AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1040' AS RULE_ID,  
+   'OBSERVATION_PERIOD' AS TB_NM,    
+   'PERIOD_TYPE_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+    FROM YourSchemaName.OBSERVATION_PERIOD A
+    WHERE PERIOD_TYPE_CONCEPT_ID IS NULL  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1042' AS RULE_ID,  
+   'VISIT_OCCURRENCE' AS TB_NM,    
+   'VISIT_OCCURRENCE_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+    FROM YourSchemaName.VISIT_OCCURRENCE A
+    WHERE VISIT_OCCURRENCE_ID IS NULL  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1043' AS RULE_ID,  
+   'VISIT_OCCURRENCE' AS TB_NM,    
+   'PERSON_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.VISIT_OCCURRENCE A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.PERSON B 
+WHERE B.PERSON_ID = A.PERSON_ID )  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( PERSON_ID IS NOT NULL AND LENGTH(CAST(PERSON_ID AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1044' AS RULE_ID,  
+   'VISIT_OCCURRENCE' AS TB_NM,    
+   'PERSON_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+    FROM YourSchemaName.VISIT_OCCURRENCE A
+    WHERE PERSON_ID IS NULL  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1045' AS RULE_ID,  
+   'VISIT_OCCURRENCE' AS TB_NM,    
+   'VISIT_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.VISIT_OCCURRENCE A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.CONCEPT B 
+WHERE 1=1 and lower(domain_id) = 'visit' and lower(standard_concept) in ('standard', 's'))  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( VISIT_CONCEPT_ID IS NOT NULL AND LENGTH(CAST(VISIT_CONCEPT_ID AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1046' AS RULE_ID,  
+   'VISIT_OCCURRENCE' AS TB_NM,    
+   'VISIT_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+    FROM YourSchemaName.VISIT_OCCURRENCE A
+    WHERE VISIT_CONCEPT_ID IS NULL  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1047' AS RULE_ID,  
+   'VISIT_OCCURRENCE' AS TB_NM,    
+   'VISIT_START_DATE' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.VISIT_OCCURRENCE A
+WHERE VISIT_START_DATE IS NOT NULL AND LENGTH(CAST(VISIT_START_DATE AS VARCHAR)) > 0 
+AND VISIT_START_DATE > VISIT_END_DATE  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1048' AS RULE_ID,  
+   'VISIT_OCCURRENCE' AS TB_NM,    
+   'VISIT_START_DATE' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+    FROM YourSchemaName.VISIT_OCCURRENCE A
+    WHERE VISIT_START_DATE IS NULL  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1049' AS RULE_ID,  
+   'VISIT_OCCURRENCE' AS TB_NM,    
+   'VISIT_START_DATE' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.VISIT_OCCURRENCE A
+WHERE VISIT_START_DATE IS NOT NULL AND LENGTH(CAST(VISIT_START_DATE AS VARCHAR)) > 0 
+AND VISIT_START_DATE NOT BETWEEN '1950-01-01' AND CURRENT_DATE
+  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1050' AS RULE_ID,  
+   'VISIT_OCCURRENCE' AS TB_NM,    
+   'VISIT_START_DATE' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.VISIT_OCCURRENCE A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.DEATH B 
+WHERE B.PERSON_ID = A.PERSON_ID 
+AND A.VISIT_START_DATE < B.DEATH_DATE )  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( VISIT_START_DATE IS NOT NULL AND LENGTH(CAST(VISIT_START_DATE AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1051' AS RULE_ID,  
+   'VISIT_OCCURRENCE' AS TB_NM,    
+   'VISIT_START_DATETIME' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.VISIT_OCCURRENCE
+WHERE CASE WHEN REGEXP_MATCH(CAST(VISIT_START_DATETIME AS VARCHAR), CAST(VISIT_START_DATE AS VARCHAR)) IS NULL
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( VISIT_START_DATETIME IS NOT NULL AND LENGTH(CAST(VISIT_START_DATETIME AS VARCHAR))>0 )
+ INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1052' AS RULE_ID,  
+   'VISIT_OCCURRENCE' AS TB_NM,    
+   'VISIT_END_DATE' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.VISIT_OCCURRENCE A
+WHERE VISIT_END_DATE IS NOT NULL AND LENGTH(CAST(VISIT_END_DATE AS VARCHAR)) > 0 
+AND VISIT_END_DATE < VISIT_START_DATE  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1053' AS RULE_ID,  
+   'VISIT_OCCURRENCE' AS TB_NM,    
+   'VISIT_END_DATE' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+    FROM YourSchemaName.VISIT_OCCURRENCE A
+    WHERE VISIT_END_DATE IS NULL  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1054' AS RULE_ID,  
+   'VISIT_OCCURRENCE' AS TB_NM,    
+   'VISIT_END_DATE' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.VISIT_OCCURRENCE A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.DEATH B 
+WHERE B.PERSON_ID = A.PERSON_ID 
+AND A.VISIT_END_DATE < B.DEATH_DATE )  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( VISIT_END_DATE IS NOT NULL AND LENGTH(CAST(VISIT_END_DATE AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1055' AS RULE_ID,  
+   'VISIT_OCCURRENCE' AS TB_NM,    
+   'VISIT_END_DATETIME' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.VISIT_OCCURRENCE
+WHERE CASE WHEN REGEXP_MATCH(CAST(VISIT_END_DATETIME AS VARCHAR), CAST(VISIT_END_DATE AS VARCHAR)) IS NULL
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( VISIT_END_DATETIME IS NOT NULL AND LENGTH(CAST(VISIT_END_DATETIME AS VARCHAR))>0 )
+ INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1056' AS RULE_ID,  
+   'VISIT_OCCURRENCE' AS TB_NM,    
+   'VISIT_TYPE_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.VISIT_OCCURRENCE A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.CONCEPT B 
+WHERE 1=1 and lower(domain_id) = 'type concept' and lower(concept_class_id) = 'type concept' and lower(standard_concept) in ('standard', 's'))  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( VISIT_TYPE_CONCEPT_ID IS NOT NULL AND LENGTH(CAST(VISIT_TYPE_CONCEPT_ID AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1057' AS RULE_ID,  
+   'VISIT_OCCURRENCE' AS TB_NM,    
+   'VISIT_TYPE_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+    FROM YourSchemaName.VISIT_OCCURRENCE A
+    WHERE VISIT_TYPE_CONCEPT_ID IS NULL  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+
+
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1061' AS RULE_ID,  
+   'VISIT_OCCURRENCE' AS TB_NM,    
+   'VISIT_SOURCE_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.VISIT_OCCURRENCE A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.CONCEPT B 
+WHERE B.CONCEPT_ID = A.VISIT_SOURCE_CONCEPT_ID)  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( VISIT_SOURCE_CONCEPT_ID IS NOT NULL AND LENGTH(CAST(VISIT_SOURCE_CONCEPT_ID AS VARCHAR))>0 ) 
+AND VISIT_SOURCE_CONCEPT_ID != 0  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1062' AS RULE_ID,  
+   'VISIT_OCCURRENCE' AS TB_NM,    
+   'ADMITTING_SOURCE_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.VISIT_OCCURRENCE A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.CONCEPT B 
+WHERE B.CONCEPT_ID = A.ADMITTING_SOURCE_CONCEPT_ID)  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( ADMITTING_SOURCE_CONCEPT_ID IS NOT NULL AND LENGTH(CAST(ADMITTING_SOURCE_CONCEPT_ID AS VARCHAR))>0 ) 
+AND ADMITTING_SOURCE_CONCEPT_ID != 0  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1064' AS RULE_ID,  
+   'VISIT_OCCURRENCE' AS TB_NM,    
+   'DISCHARGE_TO_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.VISIT_OCCURRENCE A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.CONCEPT B 
+WHERE 1=1 and lower(domain_id) = 'visit' and lower(standard_concept) in ('standard', 's'))  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( DISCHARGE_TO_CONCEPT_ID IS NOT NULL AND LENGTH(CAST(DISCHARGE_TO_CONCEPT_ID AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+
+
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1068' AS RULE_ID,  
+   'VISIT_DETAIL' AS TB_NM,    
+   'VISIT_DETAIL_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+    FROM YourSchemaName.VISIT_DETAIL A
+    WHERE VISIT_DETAIL_ID IS NULL  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1069' AS RULE_ID,  
+   'VISIT_DETAIL' AS TB_NM,    
+   'PERSON_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.VISIT_DETAIL A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.PERSON B 
+WHERE B.PERSON_ID = A.PERSON_ID )  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( PERSON_ID IS NOT NULL AND LENGTH(CAST(PERSON_ID AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1070' AS RULE_ID,  
+   'VISIT_DETAIL' AS TB_NM,    
+   'PERSON_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+    FROM YourSchemaName.VISIT_DETAIL A
+    WHERE PERSON_ID IS NULL  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1071' AS RULE_ID,  
+   'VISIT_DETAIL' AS TB_NM,    
+   'VISIT_DETAIL_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.VISIT_DETAIL A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.CONCEPT B 
+WHERE 1=1 and lower(domain_id) = 'visit' and lower(standard_concept) in ('standard', 's'))  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( VISIT_DETAIL_CONCEPT_ID IS NOT NULL AND LENGTH(CAST(VISIT_DETAIL_CONCEPT_ID AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1072' AS RULE_ID,  
+   'VISIT_DETAIL' AS TB_NM,    
+   'VISIT_DETAIL_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+    FROM YourSchemaName.VISIT_DETAIL A
+    WHERE VISIT_DETAIL_CONCEPT_ID IS NULL  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1073' AS RULE_ID,  
+   'VISIT_DETAIL' AS TB_NM,    
+   'VISIT_DETAIL_START_DATE' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.VISIT_DETAIL A
+WHERE VISIT_DETAIL_START_DATE IS NOT NULL AND LENGTH(CAST(VISIT_DETAIL_START_DATE AS VARCHAR)) > 0 
+AND VISIT_DETAIL_START_DATE > VISIT_DETAIL_END_DATE  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1074' AS RULE_ID,  
+   'VISIT_DETAIL' AS TB_NM,    
+   'VISIT_DETAIL_START_DATE' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+    FROM YourSchemaName.VISIT_DETAIL A
+    WHERE VISIT_DETAIL_START_DATE IS NULL  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1075' AS RULE_ID,  
+   'VISIT_DETAIL' AS TB_NM,    
+   'VISIT_DETAIL_START_DATE' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.VISIT_DETAIL A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.DEATH B 
+WHERE B.PERSON_ID = A.PERSON_ID 
+AND A.VISIT_DETAIL_START_DATE < B.DEATH_DATE )  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( VISIT_DETAIL_START_DATE IS NOT NULL AND LENGTH(CAST(VISIT_DETAIL_START_DATE AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1076' AS RULE_ID,  
+   'VISIT_DETAIL' AS TB_NM,    
+   'VISIT_DETAIL_START_DATE' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.VISIT_DETAIL A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.VISIT_OCCURRENCE B 
+WHERE B.VISIT_OCCURRENCE_ID = A.VISIT_OCCURRENCE_ID 
+AND A.VISIT_DETAIL_START_DATE BETWEEN (B.VISIT_START_DATE - INTERVAL '7 DAY') 
+                                  AND (B.VISIT_START_DATE + INTERVAL '7 DAY') 
+)  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( VISIT_DETAIL_START_DATE IS NOT NULL AND LENGTH(CAST(VISIT_DETAIL_START_DATE AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1077' AS RULE_ID,  
+   'VISIT_DETAIL' AS TB_NM,    
+   'VISIT_DETAIL_START_DATETIME' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.VISIT_DETAIL
+WHERE CASE WHEN REGEXP_MATCH(CAST(VISIT_DETAIL_START_DATETIME AS VARCHAR), CAST(VISIT_DETAIL_START_DATE AS VARCHAR)) IS NULL
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( VISIT_DETAIL_START_DATETIME IS NOT NULL AND LENGTH(CAST(VISIT_DETAIL_START_DATETIME AS VARCHAR))>0 )
+ INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1078' AS RULE_ID,  
+   'VISIT_DETAIL' AS TB_NM,    
+   'VISIT_DETAIL_END_DATE' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.VISIT_DETAIL A
+WHERE VISIT_DETAIL_END_DATE IS NOT NULL AND LENGTH(CAST(VISIT_DETAIL_END_DATE AS VARCHAR)) > 0 
+AND VISIT_DETAIL_END_DATE < VISIT_DETAIL_START_DATE  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1079' AS RULE_ID,  
+   'VISIT_DETAIL' AS TB_NM,    
+   'VISIT_DETAIL_END_DATE' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+    FROM YourSchemaName.VISIT_DETAIL A
+    WHERE VISIT_DETAIL_END_DATE IS NULL  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1080' AS RULE_ID,  
+   'VISIT_DETAIL' AS TB_NM,    
+   'VISIT_DETAIL_END_DATE' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.VISIT_DETAIL A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.DEATH B 
+WHERE B.PERSON_ID = A.PERSON_ID 
+AND A.VISIT_DETAIL_END_DATE < B.DEATH_DATE )  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( VISIT_DETAIL_END_DATE IS NOT NULL AND LENGTH(CAST(VISIT_DETAIL_END_DATE AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1081' AS RULE_ID,  
+   'VISIT_DETAIL' AS TB_NM,    
+   'VISIT_DETAIL_END_DATE' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.VISIT_DETAIL A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.VISIT_OCCURRENCE B 
+WHERE B.VISIT_OCCURRENCE_ID = A.VISIT_OCCURRENCE_ID 
+AND A.VISIT_DETAIL_END_DATE BETWEEN (B.VISIT_END_DATE - INTERVAL '7 DAY') 
+                                  AND (B.VISIT_END_DATE + INTERVAL '7 DAY') 
+)  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( VISIT_DETAIL_END_DATE IS NOT NULL AND LENGTH(CAST(VISIT_DETAIL_END_DATE AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1082' AS RULE_ID,  
+   'VISIT_DETAIL' AS TB_NM,    
+   'VISIT_DETAIL_END_DATETIME' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.VISIT_DETAIL
+WHERE CASE WHEN REGEXP_MATCH(CAST(VISIT_DETAIL_END_DATETIME AS VARCHAR), CAST(VISIT_DETAIL_END_DATE AS VARCHAR)) IS NULL
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( VISIT_DETAIL_END_DATETIME IS NOT NULL AND LENGTH(CAST(VISIT_DETAIL_END_DATETIME AS VARCHAR))>0 )
+ INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1083' AS RULE_ID,  
+   'VISIT_DETAIL' AS TB_NM,    
+   'VISIT_DETAIL_TYPE_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.VISIT_DETAIL A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.CONCEPT B 
+WHERE 1=1 and lower(domain_id) = 'type concept' and lower(concept_class_id) = 'type concept' and lower(standard_concept) in ('standard', 's'))  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( VISIT_DETAIL_TYPE_CONCEPT_ID IS NOT NULL AND LENGTH(CAST(VISIT_DETAIL_TYPE_CONCEPT_ID AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1084' AS RULE_ID,  
+   'VISIT_DETAIL' AS TB_NM,    
+   'VISIT_DETAIL_TYPE_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+    FROM YourSchemaName.VISIT_DETAIL A
+    WHERE VISIT_DETAIL_TYPE_CONCEPT_ID IS NULL  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+
+
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1088' AS RULE_ID,  
+   'VISIT_DETAIL' AS TB_NM,    
+   'VISIT_DETAIL_SOURCE_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.VISIT_DETAIL A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.CONCEPT B 
+WHERE B.CONCEPT_ID = A.VISIT_DETAIL_SOURCE_CONCEPT_ID)  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( VISIT_DETAIL_SOURCE_CONCEPT_ID IS NOT NULL AND LENGTH(CAST(VISIT_DETAIL_SOURCE_CONCEPT_ID AS VARCHAR))>0 ) 
+AND VISIT_DETAIL_SOURCE_CONCEPT_ID != 0  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1090' AS RULE_ID,  
+   'VISIT_DETAIL' AS TB_NM,    
+   'ADMITTING_SOURCE_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.VISIT_DETAIL A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.CONCEPT B 
+WHERE B.CONCEPT_ID = A.ADMITTING_SOURCE_CONCEPT_ID)  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( ADMITTING_SOURCE_CONCEPT_ID IS NOT NULL AND LENGTH(CAST(ADMITTING_SOURCE_CONCEPT_ID AS VARCHAR))>0 ) 
+AND ADMITTING_SOURCE_CONCEPT_ID != 0  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1092' AS RULE_ID,  
+   'VISIT_DETAIL' AS TB_NM,    
+   'DISCHARGE_TO_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.VISIT_DETAIL A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.CONCEPT B 
+WHERE 1=1 and lower(domain_id) = 'visit' and lower(standard_concept) in ('standard', 's'))  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( DISCHARGE_TO_CONCEPT_ID IS NOT NULL AND LENGTH(CAST(DISCHARGE_TO_CONCEPT_ID AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1095' AS RULE_ID,  
+   'VISIT_DETAIL' AS TB_NM,    
+   'VISIT_OCCURRENCE_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.VISIT_DETAIL A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.VISIT_OCCURRENCE B 
+WHERE B.VISIT_OCCURRENCE_ID = A.VISIT_OCCURRENCE_ID )  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( VISIT_OCCURRENCE_ID IS NOT NULL AND LENGTH(CAST(VISIT_OCCURRENCE_ID AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1096' AS RULE_ID,  
+   'VISIT_DETAIL' AS TB_NM,    
+   'VISIT_OCCURRENCE_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+    FROM YourSchemaName.VISIT_DETAIL A
+    WHERE VISIT_OCCURRENCE_ID IS NULL  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1098' AS RULE_ID,  
+   'CONDITION_OCCURRENCE' AS TB_NM,    
+   'CONDITION_OCCURRENCE_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+    FROM YourSchemaName.CONDITION_OCCURRENCE A
+    WHERE CONDITION_OCCURRENCE_ID IS NULL  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1099' AS RULE_ID,  
+   'CONDITION_OCCURRENCE' AS TB_NM,    
+   'PERSON_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.CONDITION_OCCURRENCE A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.PERSON B 
+WHERE B.PERSON_ID = A.PERSON_ID )  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( PERSON_ID IS NOT NULL AND LENGTH(CAST(PERSON_ID AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1100' AS RULE_ID,  
+   'CONDITION_OCCURRENCE' AS TB_NM,    
+   'PERSON_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+    FROM YourSchemaName.CONDITION_OCCURRENCE A
+    WHERE PERSON_ID IS NULL  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1101' AS RULE_ID,  
+   'CONDITION_OCCURRENCE' AS TB_NM,    
+   'CONDITION_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.CONDITION_OCCURRENCE A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.CONCEPT B 
+WHERE 1=1 and lower(domain_id) = 'condition' and lower(standard_concept) in ('standard', 's'))  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( CONDITION_CONCEPT_ID IS NOT NULL AND LENGTH(CAST(CONDITION_CONCEPT_ID AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1102' AS RULE_ID,  
+   'CONDITION_OCCURRENCE' AS TB_NM,    
+   'CONDITION_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+    FROM YourSchemaName.CONDITION_OCCURRENCE A
+    WHERE CONDITION_CONCEPT_ID IS NULL  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1103' AS RULE_ID,  
+   'CONDITION_OCCURRENCE' AS TB_NM,    
+   'CONDITION_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.CONDITION_OCCURRENCE A LEFT JOIN YourSchemaName.PERSON B ON A.PERSON_ID = B.PERSON_ID
+WHERE B.GENDER_CONCEPT_ID != 8507    
+AND ( CONDITION_CONCEPT_ID IS NOT NULL AND LENGTH(CAST(CONDITION_CONCEPT_ID AS VARCHAR))>0 ) 
+AND CONDITION_CONCEPT_ID IN (
+SELECT DESCENDANT_CONCEPT_ID FROM YourSchemaName.CONCEPT_ANCESTOR WHERE ANCESTOR_CONCEPT_ID IN (45771080,4216771,3655355,4090861,4057948)
+) INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1104' AS RULE_ID,  
+   'CONDITION_OCCURRENCE' AS TB_NM,    
+   'CONDITION_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.CONDITION_OCCURRENCE A LEFT JOIN YourSchemaName.PERSON B ON A.PERSON_ID = B.PERSON_ID
+WHERE B.GENDER_CONCEPT_ID != 8532    
+AND ( CONDITION_CONCEPT_ID IS NOT NULL AND LENGTH(CAST(CONDITION_CONCEPT_ID AS VARCHAR))>0 ) 
+AND CONDITION_CONCEPT_ID IN (
+SELECT DESCENDANT_CONCEPT_ID FROM YourSchemaName.CONCEPT_ANCESTOR WHERE ANCESTOR_CONCEPT_ID IN (4129486,4095793,443343,4268895,4056331)
+) INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1105' AS RULE_ID,  
+   'CONDITION_OCCURRENCE' AS TB_NM,    
+   'CONDITION_START_DATE' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.CONDITION_OCCURRENCE
+WHERE CASE WHEN REGEXP_MATCH(CAST(CONDITION_START_DATE AS VARCHAR), '^[0-9]{4}-[0-9]{2}-[0-9]{2}$') IS NULL
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( CONDITION_START_DATE IS NOT NULL AND LENGTH(CAST(CONDITION_START_DATE AS VARCHAR))>0 )
+ INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1106' AS RULE_ID,  
+   'CONDITION_OCCURRENCE' AS TB_NM,    
+   'CONDITION_START_DATE' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+    FROM YourSchemaName.CONDITION_OCCURRENCE A
+    WHERE CONDITION_START_DATE IS NULL  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1107' AS RULE_ID,  
+   'CONDITION_OCCURRENCE' AS TB_NM,    
+   'CONDITION_START_DATE' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.CONDITION_OCCURRENCE A
+WHERE CONDITION_START_DATE IS NOT NULL AND LENGTH(CAST(CONDITION_START_DATE AS VARCHAR)) > 0 
+AND CONDITION_START_DATE NOT BETWEEN '1950-01-01' AND CURRENT_DATE
+  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1108' AS RULE_ID,  
+   'CONDITION_OCCURRENCE' AS TB_NM,    
+   'CONDITION_START_DATE' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.CONDITION_OCCURRENCE A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.DEATH B 
+WHERE B.PERSON_ID = A.PERSON_ID 
+AND A.CONDITION_START_DATE < B.DEATH_DATE )  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( CONDITION_START_DATE IS NOT NULL AND LENGTH(CAST(CONDITION_START_DATE AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1109' AS RULE_ID,  
+   'CONDITION_OCCURRENCE' AS TB_NM,    
+   'CONDITION_START_DATE' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.CONDITION_OCCURRENCE A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.VISIT_OCCURRENCE B 
+WHERE B.VISIT_OCCURRENCE_ID = A.VISIT_OCCURRENCE_ID 
+AND A.CONDITION_START_DATE BETWEEN (B.VISIT_START_DATE - INTERVAL '7 DAY') 
+                                  AND (B.VISIT_START_DATE + INTERVAL '7 DAY') 
+)  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( CONDITION_START_DATE IS NOT NULL AND LENGTH(CAST(CONDITION_START_DATE AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1110' AS RULE_ID,  
+   'CONDITION_OCCURRENCE' AS TB_NM,    
+   'CONDITION_START_DATETIME' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.CONDITION_OCCURRENCE
+WHERE CASE WHEN REGEXP_MATCH(CAST(CONDITION_START_DATETIME AS VARCHAR), CAST(CONDITION_START_DATE AS VARCHAR)) IS NULL
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( CONDITION_START_DATETIME IS NOT NULL AND LENGTH(CAST(CONDITION_START_DATETIME AS VARCHAR))>0 )
+ INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1113' AS RULE_ID,  
+   'CONDITION_OCCURRENCE' AS TB_NM,    
+   'CONDITION_TYPE_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.CONDITION_OCCURRENCE A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.CONCEPT B 
+WHERE 1=1 and lower(domain_id) = 'type concept' and lower(concept_class_id) = 'type concept' and lower(standard_concept) in ('standard', 's'))  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( CONDITION_TYPE_CONCEPT_ID IS NOT NULL AND LENGTH(CAST(CONDITION_TYPE_CONCEPT_ID AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1114' AS RULE_ID,  
+   'CONDITION_OCCURRENCE' AS TB_NM,    
+   'CONDITION_TYPE_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+    FROM YourSchemaName.CONDITION_OCCURRENCE A
+    WHERE CONDITION_TYPE_CONCEPT_ID IS NULL  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1115' AS RULE_ID,  
+   'CONDITION_OCCURRENCE' AS TB_NM,    
+   'CONDITION_STATUS_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.CONDITION_OCCURRENCE A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.CONCEPT B 
+WHERE 1=1 and lower(domain_id) = 'condition status' and lower(standard_concept) in ('standard', 's'))  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( CONDITION_STATUS_CONCEPT_ID IS NOT NULL AND LENGTH(CAST(CONDITION_STATUS_CONCEPT_ID AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1118' AS RULE_ID,  
+   'CONDITION_OCCURRENCE' AS TB_NM,    
+   'VISIT_OCCURRENCE_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.CONDITION_OCCURRENCE A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.VISIT_OCCURRENCE B 
+WHERE B.VISIT_OCCURRENCE_ID = A.VISIT_OCCURRENCE_ID )  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( VISIT_OCCURRENCE_ID IS NOT NULL AND LENGTH(CAST(VISIT_OCCURRENCE_ID AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+
+
+
+
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1124' AS RULE_ID,  
+   'DRUG_EXPOSURE' AS TB_NM,    
+   'DRUG_EXPOSURE_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+    FROM YourSchemaName.DRUG_EXPOSURE A
+    WHERE DRUG_EXPOSURE_ID IS NULL  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1125' AS RULE_ID,  
+   'DRUG_EXPOSURE' AS TB_NM,    
+   'PERSON_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.DRUG_EXPOSURE A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.PERSON B 
+WHERE B.PERSON_ID = A.PERSON_ID )  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( PERSON_ID IS NOT NULL AND LENGTH(CAST(PERSON_ID AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1126' AS RULE_ID,  
+   'DRUG_EXPOSURE' AS TB_NM,    
+   'PERSON_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+    FROM YourSchemaName.DRUG_EXPOSURE A
+    WHERE PERSON_ID IS NULL  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1127' AS RULE_ID,  
+   'DRUG_EXPOSURE' AS TB_NM,    
+   'DRUG_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.DRUG_EXPOSURE A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.CONCEPT B 
+WHERE 1=1 and lower(domain_id) = 'drug' and lower(standard_concept) in ('standard', 's'))  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( DRUG_CONCEPT_ID IS NOT NULL AND LENGTH(CAST(DRUG_CONCEPT_ID AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1128' AS RULE_ID,  
+   'DRUG_EXPOSURE' AS TB_NM,    
+   'DRUG_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+    FROM YourSchemaName.DRUG_EXPOSURE A
+    WHERE DRUG_CONCEPT_ID IS NULL  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1129' AS RULE_ID,  
+   'DRUG_EXPOSURE' AS TB_NM,    
+   'DRUG_EXPOSURE_START_DATE' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.DRUG_EXPOSURE A
+WHERE DRUG_EXPOSURE_START_DATE IS NOT NULL AND LENGTH(CAST(DRUG_EXPOSURE_START_DATE AS VARCHAR)) > 0 
+AND DRUG_EXPOSURE_START_DATE > DRUG_EXPOSURE_END_DATE  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1130' AS RULE_ID,  
+   'DRUG_EXPOSURE' AS TB_NM,    
+   'DRUG_EXPOSURE_START_DATE' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+    FROM YourSchemaName.DRUG_EXPOSURE A
+    WHERE DRUG_EXPOSURE_START_DATE IS NULL  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1131' AS RULE_ID,  
+   'DRUG_EXPOSURE' AS TB_NM,    
+   'DRUG_EXPOSURE_START_DATE' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.DRUG_EXPOSURE A
+WHERE DRUG_EXPOSURE_START_DATE IS NOT NULL AND LENGTH(CAST(DRUG_EXPOSURE_START_DATE AS VARCHAR)) > 0 
+AND DRUG_EXPOSURE_START_DATE NOT BETWEEN '1950-01-01' AND CURRENT_DATE
+  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1132' AS RULE_ID,  
+   'DRUG_EXPOSURE' AS TB_NM,    
+   'DRUG_EXPOSURE_START_DATE' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.DRUG_EXPOSURE A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.DEATH B 
+WHERE B.PERSON_ID = A.PERSON_ID 
+AND A.DRUG_EXPOSURE_START_DATE < B.DEATH_DATE )  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( DRUG_EXPOSURE_START_DATE IS NOT NULL AND LENGTH(CAST(DRUG_EXPOSURE_START_DATE AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1133' AS RULE_ID,  
+   'DRUG_EXPOSURE' AS TB_NM,    
+   'DRUG_EXPOSURE_START_DATE' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.DRUG_EXPOSURE A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.VISIT_OCCURRENCE B 
+WHERE B.VISIT_OCCURRENCE_ID = A.VISIT_OCCURRENCE_ID 
+AND A.DRUG_EXPOSURE_START_DATE BETWEEN (B.VISIT_START_DATE - INTERVAL '7 DAY') 
+                                  AND (B.VISIT_START_DATE + INTERVAL '7 DAY') 
+)  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( DRUG_EXPOSURE_START_DATE IS NOT NULL AND LENGTH(CAST(DRUG_EXPOSURE_START_DATE AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1134' AS RULE_ID,  
+   'DRUG_EXPOSURE' AS TB_NM,    
+   'DRUG_EXPOSURE_START_DATETIME' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.DRUG_EXPOSURE
+WHERE CASE WHEN REGEXP_MATCH(CAST(DRUG_EXPOSURE_START_DATETIME AS VARCHAR), CAST(DRUG_EXPOSURE_START_DATE AS VARCHAR)) IS NULL
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( DRUG_EXPOSURE_START_DATETIME IS NOT NULL AND LENGTH(CAST(DRUG_EXPOSURE_START_DATETIME AS VARCHAR))>0 )
+ INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1135' AS RULE_ID,  
+   'DRUG_EXPOSURE' AS TB_NM,    
+   'DRUG_EXPOSURE_END_DATE' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.DRUG_EXPOSURE A
+WHERE DRUG_EXPOSURE_END_DATE IS NOT NULL AND LENGTH(CAST(DRUG_EXPOSURE_END_DATE AS VARCHAR)) > 0 
+AND DRUG_EXPOSURE_END_DATE < DRUG_EXPOSURE_START_DATE  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1136' AS RULE_ID,  
+   'DRUG_EXPOSURE' AS TB_NM,    
+   'DRUG_EXPOSURE_END_DATE' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+    FROM YourSchemaName.DRUG_EXPOSURE A
+    WHERE DRUG_EXPOSURE_END_DATE IS NULL  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1137' AS RULE_ID,  
+   'DRUG_EXPOSURE' AS TB_NM,    
+   'DRUG_EXPOSURE_END_DATE' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.DRUG_EXPOSURE A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.DEATH B 
+WHERE B.PERSON_ID = A.PERSON_ID 
+AND A.DRUG_EXPOSURE_END_DATE < B.DEATH_DATE )  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( DRUG_EXPOSURE_END_DATE IS NOT NULL AND LENGTH(CAST(DRUG_EXPOSURE_END_DATE AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1140' AS RULE_ID,  
+   'DRUG_EXPOSURE' AS TB_NM,    
+   'DRUG_TYPE_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.DRUG_EXPOSURE A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.CONCEPT B 
+WHERE 1=1 and lower(domain_id) = 'type concept' and lower(concept_class_id) = 'type concept' and lower(standard_concept) in ('standard', 's'))  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( DRUG_TYPE_CONCEPT_ID IS NOT NULL AND LENGTH(CAST(DRUG_TYPE_CONCEPT_ID AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1141' AS RULE_ID,  
+   'DRUG_EXPOSURE' AS TB_NM,    
+   'DRUG_TYPE_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+    FROM YourSchemaName.DRUG_EXPOSURE A
+    WHERE DRUG_TYPE_CONCEPT_ID IS NULL  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1144' AS RULE_ID,  
+   'DRUG_EXPOSURE' AS TB_NM,    
+   'QUANTITY' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.DRUG_EXPOSURE A
+WHERE QUANTITY IS NOT NULL AND LENGTH(CAST(QUANTITY AS VARCHAR)) > 0 
+AND REGEXP_MATCH(CAST(QUANTITY AS VARCHAR), '^[-+]?[0-9]+(\.[0-9]+)?$') IS NULL
+  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1145' AS RULE_ID,  
+   'DRUG_EXPOSURE' AS TB_NM,    
+   'DAYS_SUPPLY' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.DRUG_EXPOSURE A
+WHERE DAYS_SUPPLY IS NOT NULL AND LENGTH(CAST(DAYS_SUPPLY AS VARCHAR)) > 0 
+AND REGEXP_MATCH(CAST(DAYS_SUPPLY AS VARCHAR), '^[-+]?[0-9]+(\.[0-9]+)?$') IS NULL
+  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1147' AS RULE_ID,  
+   'DRUG_EXPOSURE' AS TB_NM,    
+   'ROUTE_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.DRUG_EXPOSURE A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.CONCEPT B 
+WHERE 1=1 and lower(domain_id) = 'route' and lower(standard_concept) in ('standard', 's'))  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( ROUTE_CONCEPT_ID IS NOT NULL AND LENGTH(CAST(ROUTE_CONCEPT_ID AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1150' AS RULE_ID,  
+   'DRUG_EXPOSURE' AS TB_NM,    
+   'VISIT_OCCURRENCE_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.DRUG_EXPOSURE A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.VISIT_OCCURRENCE B 
+WHERE B.VISIT_OCCURRENCE_ID = A.VISIT_OCCURRENCE_ID )  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( VISIT_OCCURRENCE_ID IS NOT NULL AND LENGTH(CAST(VISIT_OCCURRENCE_ID AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1153' AS RULE_ID,  
+   'DRUG_EXPOSURE' AS TB_NM,    
+   'DRUG_SOURCE_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.DRUG_EXPOSURE A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.CONCEPT B 
+WHERE B.CONCEPT_ID = A.DRUG_SOURCE_CONCEPT_ID)  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( DRUG_SOURCE_CONCEPT_ID IS NOT NULL AND LENGTH(CAST(DRUG_SOURCE_CONCEPT_ID AS VARCHAR))>0 ) 
+AND DRUG_SOURCE_CONCEPT_ID != 0  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+
+
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1157' AS RULE_ID,  
+   'PROCEDURE_OCCURRENCE' AS TB_NM,    
+   'PROCEDURE_OCCURRENCE_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+    FROM YourSchemaName.PROCEDURE_OCCURRENCE A
+    WHERE PROCEDURE_OCCURRENCE_ID IS NULL  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1158' AS RULE_ID,  
+   'PROCEDURE_OCCURRENCE' AS TB_NM,    
+   'PERSON_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.PROCEDURE_OCCURRENCE A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.PERSON B 
+WHERE B.PERSON_ID = A.PERSON_ID )  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( PERSON_ID IS NOT NULL AND LENGTH(CAST(PERSON_ID AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1159' AS RULE_ID,  
+   'PROCEDURE_OCCURRENCE' AS TB_NM,    
+   'PERSON_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+    FROM YourSchemaName.PROCEDURE_OCCURRENCE A
+    WHERE PERSON_ID IS NULL  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1160' AS RULE_ID,  
+   'PROCEDURE_OCCURRENCE' AS TB_NM,    
+   'PROCEDURE_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.PROCEDURE_OCCURRENCE A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.CONCEPT B 
+WHERE 1=1 and lower(domain_id) = 'procedure' and lower(standard_concept) in ('standard', 's'))  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( PROCEDURE_CONCEPT_ID IS NOT NULL AND LENGTH(CAST(PROCEDURE_CONCEPT_ID AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1161' AS RULE_ID,  
+   'PROCEDURE_OCCURRENCE' AS TB_NM,    
+   'PROCEDURE_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+    FROM YourSchemaName.PROCEDURE_OCCURRENCE A
+    WHERE PROCEDURE_CONCEPT_ID IS NULL  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1162' AS RULE_ID,  
+   'PROCEDURE_OCCURRENCE' AS TB_NM,    
+   'PROCEDURE_DATE' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.PROCEDURE_OCCURRENCE
+WHERE CASE WHEN REGEXP_MATCH(CAST(PROCEDURE_DATE AS VARCHAR), '^[0-9]{4}-[0-9]{2}-[0-9]{2}$') IS NULL
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( PROCEDURE_DATE IS NOT NULL AND LENGTH(CAST(PROCEDURE_DATE AS VARCHAR))>0 )
+ INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1163' AS RULE_ID,  
+   'PROCEDURE_OCCURRENCE' AS TB_NM,    
+   'PROCEDURE_DATE' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+    FROM YourSchemaName.PROCEDURE_OCCURRENCE A
+    WHERE PROCEDURE_DATE IS NULL  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1164' AS RULE_ID,  
+   'PROCEDURE_OCCURRENCE' AS TB_NM,    
+   'PROCEDURE_DATE' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.PROCEDURE_OCCURRENCE A
+WHERE PROCEDURE_DATE IS NOT NULL AND LENGTH(CAST(PROCEDURE_DATE AS VARCHAR)) > 0 
+AND PROCEDURE_DATE NOT BETWEEN '1950-01-01' AND CURRENT_DATE
+  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1165' AS RULE_ID,  
+   'PROCEDURE_OCCURRENCE' AS TB_NM,    
+   'PROCEDURE_DATE' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.PROCEDURE_OCCURRENCE A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.DEATH B 
+WHERE B.PERSON_ID = A.PERSON_ID 
+AND A.PROCEDURE_DATE < B.DEATH_DATE )  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( PROCEDURE_DATE IS NOT NULL AND LENGTH(CAST(PROCEDURE_DATE AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1166' AS RULE_ID,  
+   'PROCEDURE_OCCURRENCE' AS TB_NM,    
+   'PROCEDURE_DATE' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.PROCEDURE_OCCURRENCE A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.VISIT_OCCURRENCE B 
+WHERE B.VISIT_OCCURRENCE_ID = A.VISIT_OCCURRENCE_ID 
+AND A.PROCEDURE_DATE BETWEEN (B.VISIT_START_DATE - INTERVAL '7 DAY') 
+                                  AND (B.VISIT_START_DATE + INTERVAL '7 DAY') 
+)  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( PROCEDURE_DATE IS NOT NULL AND LENGTH(CAST(PROCEDURE_DATE AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1167' AS RULE_ID,  
+   'PROCEDURE_OCCURRENCE' AS TB_NM,    
+   'PROCEDURE_DATETIME' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.PROCEDURE_OCCURRENCE
+WHERE CASE WHEN REGEXP_MATCH(CAST(PROCEDURE_DATETIME AS VARCHAR), CAST(PROCEDURE_DATE AS VARCHAR)) IS NULL
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( PROCEDURE_DATETIME IS NOT NULL AND LENGTH(CAST(PROCEDURE_DATETIME AS VARCHAR))>0 )
+ INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1168' AS RULE_ID,  
+   'PROCEDURE_OCCURRENCE' AS TB_NM,    
+   'PROCEDURE_TYPE_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.PROCEDURE_OCCURRENCE A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.CONCEPT B 
+WHERE 1=1 and lower(domain_id) = 'type concept' and lower(concept_class_id) = 'type concept' and lower(standard_concept) in ('standard', 's'))  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( PROCEDURE_TYPE_CONCEPT_ID IS NOT NULL AND LENGTH(CAST(PROCEDURE_TYPE_CONCEPT_ID AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1169' AS RULE_ID,  
+   'PROCEDURE_OCCURRENCE' AS TB_NM,    
+   'PROCEDURE_TYPE_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+    FROM YourSchemaName.PROCEDURE_OCCURRENCE A
+    WHERE PROCEDURE_TYPE_CONCEPT_ID IS NULL  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1170' AS RULE_ID,  
+   'PROCEDURE_OCCURRENCE' AS TB_NM,    
+   'MODIFIER_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.PROCEDURE_OCCURRENCE A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.CONCEPT B 
+WHERE 1=1 and lower(vocabulary_id) in ('cpt4', 'hcpcs') and lower(concept_class_id) in ('cpt4 modifier', 'hcpcs modifier') and lower(standard_concept) in ('standard', 's'))  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( MODIFIER_CONCEPT_ID IS NOT NULL AND LENGTH(CAST(MODIFIER_CONCEPT_ID AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1171' AS RULE_ID,  
+   'PROCEDURE_OCCURRENCE' AS TB_NM,    
+   'QUANTITY' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.PROCEDURE_OCCURRENCE A
+WHERE QUANTITY IS NOT NULL AND LENGTH(CAST(QUANTITY AS VARCHAR)) > 0 
+AND REGEXP_MATCH(CAST(QUANTITY AS VARCHAR), '^[-+]?[0-9]+(\.[0-9]+)?$') IS NULL
+  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1173' AS RULE_ID,  
+   'PROCEDURE_OCCURRENCE' AS TB_NM,    
+   'VISIT_OCCURRENCE_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.PROCEDURE_OCCURRENCE A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.VISIT_OCCURRENCE B 
+WHERE B.VISIT_OCCURRENCE_ID = A.VISIT_OCCURRENCE_ID )  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( VISIT_OCCURRENCE_ID IS NOT NULL AND LENGTH(CAST(VISIT_OCCURRENCE_ID AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+
+
+
+
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1179' AS RULE_ID,  
+   'DEVICE_EXPOSURE' AS TB_NM,    
+   'DEVICE_EXPOSURE_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+    FROM YourSchemaName.DEVICE_EXPOSURE A
+    WHERE DEVICE_EXPOSURE_ID IS NULL  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1180' AS RULE_ID,  
+   'DEVICE_EXPOSURE' AS TB_NM,    
+   'PERSON_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.DEVICE_EXPOSURE A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.PERSON B 
+WHERE B.PERSON_ID = A.PERSON_ID )  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( PERSON_ID IS NOT NULL AND LENGTH(CAST(PERSON_ID AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1181' AS RULE_ID,  
+   'DEVICE_EXPOSURE' AS TB_NM,    
+   'PERSON_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+    FROM YourSchemaName.DEVICE_EXPOSURE A
+    WHERE PERSON_ID IS NULL  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1182' AS RULE_ID,  
+   'DEVICE_EXPOSURE' AS TB_NM,    
+   'PERSON_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+    FROM YourSchemaName.DEVICE_EXPOSURE A
+    WHERE PERSON_ID IS NULL  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1183' AS RULE_ID,  
+   'DEVICE_EXPOSURE' AS TB_NM,    
+   'DEVICE_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.DEVICE_EXPOSURE A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.CONCEPT B 
+WHERE 1=1 and lower(domain_id) = 'device' and lower(standard_concept) in ('standard', 's'))  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( DEVICE_CONCEPT_ID IS NOT NULL AND LENGTH(CAST(DEVICE_CONCEPT_ID AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1184' AS RULE_ID,  
+   'DEVICE_EXPOSURE' AS TB_NM,    
+   'DEVICE_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+    FROM YourSchemaName.DEVICE_EXPOSURE A
+    WHERE DEVICE_CONCEPT_ID IS NULL  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1185' AS RULE_ID,  
+   'DEVICE_EXPOSURE' AS TB_NM,    
+   'DEVICE_EXPOSURE_START_DATE' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.DEVICE_EXPOSURE A
+WHERE DEVICE_EXPOSURE_START_DATE IS NOT NULL AND LENGTH(CAST(DEVICE_EXPOSURE_START_DATE AS VARCHAR)) > 0 
+AND DEVICE_EXPOSURE_START_DATE > DEVICE_EXPOSURE_END_DATE  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1186' AS RULE_ID,  
+   'DEVICE_EXPOSURE' AS TB_NM,    
+   'DEVICE_EXPOSURE_START_DATE' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+    FROM YourSchemaName.DEVICE_EXPOSURE A
+    WHERE DEVICE_EXPOSURE_START_DATE IS NULL  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1187' AS RULE_ID,  
+   'DEVICE_EXPOSURE' AS TB_NM,    
+   'DEVICE_EXPOSURE_START_DATE' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.DEVICE_EXPOSURE A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.DEATH B 
+WHERE B.PERSON_ID = A.PERSON_ID 
+AND A.DEVICE_EXPOSURE_START_DATE < B.DEATH_DATE )  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( DEVICE_EXPOSURE_START_DATE IS NOT NULL AND LENGTH(CAST(DEVICE_EXPOSURE_START_DATE AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1188' AS RULE_ID,  
+   'DEVICE_EXPOSURE' AS TB_NM,    
+   'DEVICE_EXPOSURE_START_DATE' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.DEVICE_EXPOSURE A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.VISIT_OCCURRENCE B 
+WHERE B.VISIT_OCCURRENCE_ID = A.VISIT_OCCURRENCE_ID 
+AND A.DEVICE_EXPOSURE_START_DATE BETWEEN (B.VISIT_START_DATE - INTERVAL '7 DAY') 
+                                  AND (B.VISIT_START_DATE + INTERVAL '7 DAY') 
+)  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( DEVICE_EXPOSURE_START_DATE IS NOT NULL AND LENGTH(CAST(DEVICE_EXPOSURE_START_DATE AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1189' AS RULE_ID,  
+   'DEVICE_EXPOSURE' AS TB_NM,    
+   'DEVICE_EXPOSURE_START_DATETIME' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.DEVICE_EXPOSURE
+WHERE CASE WHEN REGEXP_MATCH(CAST(DEVICE_EXPOSURE_START_DATETIME AS VARCHAR), CAST(DEVICE_EXPOSURE_START_DATE AS VARCHAR)) IS NULL
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( DEVICE_EXPOSURE_START_DATETIME IS NOT NULL AND LENGTH(CAST(DEVICE_EXPOSURE_START_DATETIME AS VARCHAR))>0 )
+ INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1190' AS RULE_ID,  
+   'DEVICE_EXPOSURE' AS TB_NM,    
+   'DEVICE_EXPOSURE_END_DATE' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.DEVICE_EXPOSURE A
+WHERE DEVICE_EXPOSURE_END_DATE IS NOT NULL AND LENGTH(CAST(DEVICE_EXPOSURE_END_DATE AS VARCHAR)) > 0 
+AND DEVICE_EXPOSURE_END_DATE < DEVICE_EXPOSURE_START_DATE  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1191' AS RULE_ID,  
+   'DEVICE_EXPOSURE' AS TB_NM,    
+   'DEVICE_EXPOSURE_END_DATE' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.DEVICE_EXPOSURE A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.DEATH B 
+WHERE B.PERSON_ID = A.PERSON_ID 
+AND A.DEVICE_EXPOSURE_END_DATE < B.DEATH_DATE )  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( DEVICE_EXPOSURE_END_DATE IS NOT NULL AND LENGTH(CAST(DEVICE_EXPOSURE_END_DATE AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1192' AS RULE_ID,  
+   'DEVICE_EXPOSURE' AS TB_NM,    
+   'DEVICE_EXPOSURE_END_DATETIME' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.DEVICE_EXPOSURE
+WHERE CASE WHEN REGEXP_MATCH(CAST(DEVICE_EXPOSURE_END_DATETIME AS VARCHAR), CAST(DEVICE_EXPOSURE_END_DATE AS VARCHAR)) IS NULL
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( DEVICE_EXPOSURE_END_DATETIME IS NOT NULL AND LENGTH(CAST(DEVICE_EXPOSURE_END_DATETIME AS VARCHAR))>0 )
+ INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1193' AS RULE_ID,  
+   'DEVICE_EXPOSURE' AS TB_NM,    
+   'DEVICE_TYPE_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.DEVICE_EXPOSURE A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.CONCEPT B 
+WHERE 1=1 and lower(domain_id) = 'type concept' and lower(concept_class_id) = 'type concept' and lower(standard_concept) in ('standard', 's'))  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( DEVICE_TYPE_CONCEPT_ID IS NOT NULL AND LENGTH(CAST(DEVICE_TYPE_CONCEPT_ID AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1194' AS RULE_ID,  
+   'DEVICE_EXPOSURE' AS TB_NM,    
+   'DEVICE_TYPE_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+    FROM YourSchemaName.DEVICE_EXPOSURE A
+    WHERE DEVICE_TYPE_CONCEPT_ID IS NULL  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1196' AS RULE_ID,  
+   'DEVICE_EXPOSURE' AS TB_NM,    
+   'QUANTITY' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.DEVICE_EXPOSURE A
+WHERE QUANTITY IS NOT NULL AND LENGTH(CAST(QUANTITY AS VARCHAR)) > 0 
+AND REGEXP_MATCH(CAST(QUANTITY AS VARCHAR), '^[-+]?[0-9]+(\.[0-9]+)?$') IS NULL
+  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1198' AS RULE_ID,  
+   'DEVICE_EXPOSURE' AS TB_NM,    
+   'VISIT_OCCURRENCE_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.DEVICE_EXPOSURE A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.VISIT_OCCURRENCE B 
+WHERE B.VISIT_OCCURRENCE_ID = A.VISIT_OCCURRENCE_ID )  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( VISIT_OCCURRENCE_ID IS NOT NULL AND LENGTH(CAST(VISIT_OCCURRENCE_ID AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1201' AS RULE_ID,  
+   'DEVICE_EXPOSURE' AS TB_NM,    
+   'DEVICE_SOURCE_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.DEVICE_EXPOSURE A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.CONCEPT B 
+WHERE B.CONCEPT_ID = A.DEVICE_SOURCE_CONCEPT_ID)  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( DEVICE_SOURCE_CONCEPT_ID IS NOT NULL AND LENGTH(CAST(DEVICE_SOURCE_CONCEPT_ID AS VARCHAR))>0 ) 
+AND DEVICE_SOURCE_CONCEPT_ID != 0  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1203' AS RULE_ID,  
+   'MEASUREMENT' AS TB_NM,    
+   'MEASUREMENT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+    FROM YourSchemaName.MEASUREMENT A
+    WHERE MEASUREMENT_ID IS NULL  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1204' AS RULE_ID,  
+   'MEASUREMENT' AS TB_NM,    
+   'PERSON_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.MEASUREMENT A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.PERSON B 
+WHERE B.PERSON_ID = A.PERSON_ID )  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( PERSON_ID IS NOT NULL AND LENGTH(CAST(PERSON_ID AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1205' AS RULE_ID,  
+   'MEASUREMENT' AS TB_NM,    
+   'PERSON_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+    FROM YourSchemaName.MEASUREMENT A
+    WHERE PERSON_ID IS NULL  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1206' AS RULE_ID,  
+   'MEASUREMENT' AS TB_NM,    
+   'MEASUREMENT_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.MEASUREMENT A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.CONCEPT B 
+WHERE 1=1 and lower(domain_id) = 'measurement' and lower(standard_concept) in ('standard', 's'))  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( MEASUREMENT_CONCEPT_ID IS NOT NULL AND LENGTH(CAST(MEASUREMENT_CONCEPT_ID AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1207' AS RULE_ID,  
+   'MEASUREMENT' AS TB_NM,    
+   'MEASUREMENT_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+    FROM YourSchemaName.MEASUREMENT A
+    WHERE MEASUREMENT_CONCEPT_ID IS NULL  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1208' AS RULE_ID,  
+   'MEASUREMENT' AS TB_NM,    
+   'MEASUREMENT_DATE' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.MEASUREMENT
+WHERE CASE WHEN REGEXP_MATCH(CAST(MEASUREMENT_DATE AS VARCHAR), '^[0-9]{4}-[0-9]{2}-[0-9]{2}$') IS NULL
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( MEASUREMENT_DATE IS NOT NULL AND LENGTH(CAST(MEASUREMENT_DATE AS VARCHAR))>0 )
+ INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1209' AS RULE_ID,  
+   'MEASUREMENT' AS TB_NM,    
+   'MEASUREMENT_DATE' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+    FROM YourSchemaName.MEASUREMENT A
+    WHERE MEASUREMENT_DATE IS NULL  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1210' AS RULE_ID,  
+   'MEASUREMENT' AS TB_NM,    
+   'MEASUREMENT_DATE' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.MEASUREMENT A
+WHERE MEASUREMENT_DATE IS NOT NULL AND LENGTH(CAST(MEASUREMENT_DATE AS VARCHAR)) > 0 
+AND MEASUREMENT_DATE NOT BETWEEN '1950-01-01' AND CURRENT_DATE
+  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1211' AS RULE_ID,  
+   'MEASUREMENT' AS TB_NM,    
+   'MEASUREMENT_DATE' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.MEASUREMENT A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.DEATH B 
+WHERE B.PERSON_ID = A.PERSON_ID 
+AND A.MEASUREMENT_DATE < B.DEATH_DATE )  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( MEASUREMENT_DATE IS NOT NULL AND LENGTH(CAST(MEASUREMENT_DATE AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1212' AS RULE_ID,  
+   'MEASUREMENT' AS TB_NM,    
+   'MEASUREMENT_DATE' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.MEASUREMENT A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.VISIT_OCCURRENCE B 
+WHERE B.VISIT_OCCURRENCE_ID = A.VISIT_OCCURRENCE_ID 
+AND A.MEASUREMENT_DATE BETWEEN (B.VISIT_START_DATE - INTERVAL '7 DAY') 
+                                  AND (B.VISIT_START_DATE + INTERVAL '7 DAY') 
+)  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( MEASUREMENT_DATE IS NOT NULL AND LENGTH(CAST(MEASUREMENT_DATE AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1213' AS RULE_ID,  
+   'MEASUREMENT' AS TB_NM,    
+   'MEASUREMENT_DATETIME' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.MEASUREMENT
+WHERE CASE WHEN REGEXP_MATCH(CAST(MEASUREMENT_DATETIME AS VARCHAR), CAST(MEASUREMENT_DATE AS VARCHAR)) IS NULL
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( MEASUREMENT_DATETIME IS NOT NULL AND LENGTH(CAST(MEASUREMENT_DATETIME AS VARCHAR))>0 )
+ INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1215' AS RULE_ID,  
+   'MEASUREMENT' AS TB_NM,    
+   'MEASUREMENT_TYPE_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.MEASUREMENT A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.CONCEPT B 
+WHERE 1=1 and lower(domain_id) = 'type concept' and lower(concept_class_id) = 'type concept' and lower(standard_concept) in ('standard', 's'))  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( MEASUREMENT_TYPE_CONCEPT_ID IS NOT NULL AND LENGTH(CAST(MEASUREMENT_TYPE_CONCEPT_ID AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1216' AS RULE_ID,  
+   'MEASUREMENT' AS TB_NM,    
+   'MEASUREMENT_TYPE_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+    FROM YourSchemaName.MEASUREMENT A
+    WHERE MEASUREMENT_TYPE_CONCEPT_ID IS NULL  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1217' AS RULE_ID,  
+   'MEASUREMENT' AS TB_NM,    
+   'OPERATOR_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.MEASUREMENT A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.CONCEPT B 
+WHERE 1=1 and lower(domain_id) = 'meas value operator' and lower(standard_concept) in ('standard', 's'))  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( OPERATOR_CONCEPT_ID IS NOT NULL AND LENGTH(CAST(OPERATOR_CONCEPT_ID AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1218' AS RULE_ID,  
+   'MEASUREMENT' AS TB_NM,    
+   'VALUE_AS_NUMBER' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.MEASUREMENT A
+WHERE VALUE_AS_NUMBER IS NOT NULL AND LENGTH(CAST(VALUE_AS_NUMBER AS VARCHAR)) > 0 
+AND REGEXP_MATCH(CAST(VALUE_AS_NUMBER AS VARCHAR), '^[-+]?[0-9]+(\.[0-9]+)?$') IS NULL
+  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1219' AS RULE_ID,  
+   'MEASUREMENT' AS TB_NM,    
+   'VALUE_AS_NUMBER' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.MEASUREMENT A
+WHERE VALUE_AS_NUMBER IS NULL
+AND UNIT_CONCEPT_ID IS NOT NULL
+AND UNIT_CONCEPT_ID != 0 
+  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1220' AS RULE_ID,  
+   'MEASUREMENT' AS TB_NM,    
+   'VALUE_AS_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.MEASUREMENT A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.CONCEPT B 
+WHERE B.CONCEPT_ID = A.VALUE_AS_CONCEPT_ID)  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( VALUE_AS_CONCEPT_ID IS NOT NULL AND LENGTH(CAST(VALUE_AS_CONCEPT_ID AS VARCHAR))>0 ) 
+AND VALUE_AS_CONCEPT_ID != 0  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1221' AS RULE_ID,  
+   'MEASUREMENT' AS TB_NM,    
+   'UNIT_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.MEASUREMENT A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.CONCEPT B 
+WHERE B.CONCEPT_ID = A.UNIT_CONCEPT_ID)  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( UNIT_CONCEPT_ID IS NOT NULL AND LENGTH(CAST(UNIT_CONCEPT_ID AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1222' AS RULE_ID,  
+   'MEASUREMENT' AS TB_NM,    
+   'RANGE_LOW' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.MEASUREMENT A
+WHERE RANGE_LOW IS NOT NULL AND LENGTH(CAST(RANGE_LOW AS VARCHAR)) > 0 
+AND REGEXP_MATCH(CAST(RANGE_LOW AS VARCHAR), '^[-+]?[0-9]+(\.[0-9]+)?$') IS NULL
+  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1223' AS RULE_ID,  
+   'MEASUREMENT' AS TB_NM,    
+   'RANGE_HIGH' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.MEASUREMENT A
+WHERE RANGE_HIGH IS NOT NULL AND LENGTH(CAST(RANGE_HIGH AS VARCHAR)) > 0 
+AND REGEXP_MATCH(CAST(RANGE_HIGH AS VARCHAR), '^[-+]?[0-9]+(\.[0-9]+)?$') IS NULL
+  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1225' AS RULE_ID,  
+   'MEASUREMENT' AS TB_NM,    
+   'VISIT_OCCURRENCE_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.MEASUREMENT A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.VISIT_OCCURRENCE B 
+WHERE B.VISIT_OCCURRENCE_ID = A.VISIT_OCCURRENCE_ID )  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( VISIT_OCCURRENCE_ID IS NOT NULL AND LENGTH(CAST(VISIT_OCCURRENCE_ID AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+
+
+
+
+
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1232' AS RULE_ID,  
+   'OBSERVATION' AS TB_NM,    
+   'OBSERVATION_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+    FROM YourSchemaName.OBSERVATION A
+    WHERE OBSERVATION_ID IS NULL  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1233' AS RULE_ID,  
+   'OBSERVATION' AS TB_NM,    
+   'PERSON_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.OBSERVATION A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.PERSON B 
+WHERE B.PERSON_ID = A.PERSON_ID )  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( PERSON_ID IS NOT NULL AND LENGTH(CAST(PERSON_ID AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1234' AS RULE_ID,  
+   'OBSERVATION' AS TB_NM,    
+   'PERSON_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+    FROM YourSchemaName.OBSERVATION A
+    WHERE PERSON_ID IS NULL  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1235' AS RULE_ID,  
+   'OBSERVATION' AS TB_NM,    
+   'OBSERVATION_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.OBSERVATION A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.CONCEPT B 
+WHERE B.CONCEPT_ID = A.OBSERVATION_CONCEPT_ID)  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( OBSERVATION_CONCEPT_ID IS NOT NULL AND LENGTH(CAST(OBSERVATION_CONCEPT_ID AS VARCHAR))>0 ) 
+AND OBSERVATION_CONCEPT_ID != 0  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1236' AS RULE_ID,  
+   'OBSERVATION' AS TB_NM,    
+   'OBSERVATION_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+    FROM YourSchemaName.OBSERVATION A
+    WHERE OBSERVATION_CONCEPT_ID IS NULL  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1237' AS RULE_ID,  
+   'OBSERVATION' AS TB_NM,    
+   'OBSERVATION_DATE' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.OBSERVATION
+WHERE CASE WHEN REGEXP_MATCH(CAST(OBSERVATION_DATE AS VARCHAR), '^[0-9]{4}-[0-9]{2}-[0-9]{2}$') IS NULL
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( OBSERVATION_DATE IS NOT NULL AND LENGTH(CAST(OBSERVATION_DATE AS VARCHAR))>0 )
+ INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1238' AS RULE_ID,  
+   'OBSERVATION' AS TB_NM,    
+   'OBSERVATION_DATE' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+    FROM YourSchemaName.OBSERVATION A
+    WHERE OBSERVATION_DATE IS NULL  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1239' AS RULE_ID,  
+   'OBSERVATION' AS TB_NM,    
+   'OBSERVATION_DATE' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.OBSERVATION A
+WHERE OBSERVATION_DATE IS NOT NULL AND LENGTH(CAST(OBSERVATION_DATE AS VARCHAR)) > 0 
+AND OBSERVATION_DATE NOT BETWEEN '1950-01-01' AND CURRENT_DATE
+  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1240' AS RULE_ID,  
+   'OBSERVATION' AS TB_NM,    
+   'OBSERVATION_DATE' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.OBSERVATION A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.DEATH B 
+WHERE B.PERSON_ID = A.PERSON_ID 
+AND A.OBSERVATION_DATE < B.DEATH_DATE )  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( OBSERVATION_DATE IS NOT NULL AND LENGTH(CAST(OBSERVATION_DATE AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1241' AS RULE_ID,  
+   'OBSERVATION' AS TB_NM,    
+   'OBSERVATION_DATE' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.OBSERVATION A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.VISIT_OCCURRENCE B 
+WHERE B.VISIT_OCCURRENCE_ID = A.VISIT_OCCURRENCE_ID 
+AND A.OBSERVATION_DATE BETWEEN (B.VISIT_START_DATE - INTERVAL '7 DAY') 
+                                  AND (B.VISIT_START_DATE + INTERVAL '7 DAY') 
+)  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( OBSERVATION_DATE IS NOT NULL AND LENGTH(CAST(OBSERVATION_DATE AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1242' AS RULE_ID,  
+   'OBSERVATION' AS TB_NM,    
+   'OBSERVATION_DATETIME' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.OBSERVATION
+WHERE CASE WHEN REGEXP_MATCH(CAST(OBSERVATION_DATETIME AS VARCHAR), CAST(OBSERVATION_DATE AS VARCHAR)) IS NULL
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( OBSERVATION_DATETIME IS NOT NULL AND LENGTH(CAST(OBSERVATION_DATETIME AS VARCHAR))>0 )
+ INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1243' AS RULE_ID,  
+   'OBSERVATION' AS TB_NM,    
+   'OBSERVATION_TYPE_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.OBSERVATION A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.CONCEPT B 
+WHERE 1=1 and lower(domain_id) = 'type concept' and lower(concept_class_id) = 'type concept' and lower(standard_concept) in ('standard', 's'))  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( OBSERVATION_TYPE_CONCEPT_ID IS NOT NULL AND LENGTH(CAST(OBSERVATION_TYPE_CONCEPT_ID AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1244' AS RULE_ID,  
+   'OBSERVATION' AS TB_NM,    
+   'OBSERVATION_TYPE_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+    FROM YourSchemaName.OBSERVATION A
+    WHERE OBSERVATION_TYPE_CONCEPT_ID IS NULL  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1245' AS RULE_ID,  
+   'OBSERVATION' AS TB_NM,    
+   'VALUE_AS_NUMBER' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.OBSERVATION A
+WHERE VALUE_AS_NUMBER IS NOT NULL AND LENGTH(CAST(VALUE_AS_NUMBER AS VARCHAR)) > 0 
+AND REGEXP_MATCH(CAST(VALUE_AS_NUMBER AS VARCHAR), '^[-+]?[0-9]+(\.[0-9]+)?$') IS NULL
+  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1246' AS RULE_ID,  
+   'OBSERVATION' AS TB_NM,    
+   'VALUE_AS_NUMBER' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.OBSERVATION A
+WHERE VALUE_AS_NUMBER IS NULL
+AND UNIT_CONCEPT_ID IS NOT NULL
+AND UNIT_CONCEPT_ID != 0 
+  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1248' AS RULE_ID,  
+   'OBSERVATION' AS TB_NM,    
+   'VALUE_AS_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.OBSERVATION A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.CONCEPT B 
+WHERE B.CONCEPT_ID = A.VALUE_AS_CONCEPT_ID)  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( VALUE_AS_CONCEPT_ID IS NOT NULL AND LENGTH(CAST(VALUE_AS_CONCEPT_ID AS VARCHAR))>0 ) 
+AND VALUE_AS_CONCEPT_ID != 0  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1249' AS RULE_ID,  
+   'OBSERVATION' AS TB_NM,    
+   'QUALIFIER_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.OBSERVATION A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.CONCEPT B 
+WHERE B.CONCEPT_ID = A.QUALIFIER_CONCEPT_ID)  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( QUALIFIER_CONCEPT_ID IS NOT NULL AND LENGTH(CAST(QUALIFIER_CONCEPT_ID AS VARCHAR))>0 ) 
+AND QUALIFIER_CONCEPT_ID != 0  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1250' AS RULE_ID,  
+   'OBSERVATION' AS TB_NM,    
+   'UNIT_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.OBSERVATION A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.CONCEPT B 
+WHERE 1=1 and lower(domain_id) = 'unit' and lower(standard_concept) in ('standard', 's'))  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( UNIT_CONCEPT_ID IS NOT NULL AND LENGTH(CAST(UNIT_CONCEPT_ID AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1252' AS RULE_ID,  
+   'OBSERVATION' AS TB_NM,    
+   'VISIT_OCCURRENCE_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.OBSERVATION A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.VISIT_OCCURRENCE B 
+WHERE B.VISIT_OCCURRENCE_ID = A.VISIT_OCCURRENCE_ID )  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( VISIT_OCCURRENCE_ID IS NOT NULL AND LENGTH(CAST(VISIT_OCCURRENCE_ID AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1255' AS RULE_ID,  
+   'OBSERVATION' AS TB_NM,    
+   'OBSERVATION_SOURCE_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.OBSERVATION A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.CONCEPT B 
+WHERE B.CONCEPT_ID = A.OBSERVATION_SOURCE_CONCEPT_ID)  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( OBSERVATION_SOURCE_CONCEPT_ID IS NOT NULL AND LENGTH(CAST(OBSERVATION_SOURCE_CONCEPT_ID AS VARCHAR))>0 ) 
+AND OBSERVATION_SOURCE_CONCEPT_ID != 0  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1258' AS RULE_ID,  
+   'DEATH' AS TB_NM,    
+   'PERSON_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM (
+   SELECT PERSON_ID,
+        COUNT(*) OVER (PARTITION BY PERSON_ID) AS CNT
+    FROM YourSchemaName.DEATH A
+    WHERE PERSON_ID IS NOT NULL AND LENGTH(CAST(PERSON_ID AS VARCHAR)) > 0
+) subquery 
+WHERE CNT > 1
+  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1259' AS RULE_ID,  
+   'DEATH' AS TB_NM,    
+   'PERSON_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+    FROM YourSchemaName.DEATH A
+    WHERE PERSON_ID IS NULL  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1260' AS RULE_ID,  
+   'DEATH' AS TB_NM,    
+   'PERSON_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.DEATH A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.PERSON B 
+WHERE B.PERSON_ID = A.PERSON_ID 
+AND MAKE_DATE(B.YEAR_OF_BIRTH,B.MONTH_OF_BIRTH,B.DAY_OF_BIRTH) < A.DEATH_DATE )  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( PERSON_ID IS NOT NULL AND LENGTH(CAST(PERSON_ID AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1261' AS RULE_ID,  
+   'DEATH' AS TB_NM,    
+   'DEATH_DATE' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.DEATH
+WHERE CASE WHEN REGEXP_MATCH(CAST(DEATH_DATE AS VARCHAR), '^[0-9]{4}-[0-9]{2}-[0-9]{2}$') IS NULL
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( DEATH_DATE IS NOT NULL AND LENGTH(CAST(DEATH_DATE AS VARCHAR))>0 )
+ INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1262' AS RULE_ID,  
+   'DEATH' AS TB_NM,    
+   'DEATH_DATE' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+    FROM YourSchemaName.DEATH A
+    WHERE DEATH_DATE IS NULL  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1264' AS RULE_ID,  
+   'DEATH' AS TB_NM,    
+   'DEATH_TYPE_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.DEATH A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.CONCEPT B 
+WHERE 1=1 and lower(domain_id) = 'type concept' and lower(concept_class_id) = 'type concept' and lower(standard_concept) in ('standard', 's'))  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( DEATH_TYPE_CONCEPT_ID IS NOT NULL AND LENGTH(CAST(DEATH_TYPE_CONCEPT_ID AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1265' AS RULE_ID,  
+   'DEATH' AS TB_NM,    
+   'CAUSE_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.DEATH A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.CONCEPT B 
+WHERE B.CONCEPT_ID = A.CAUSE_CONCEPT_ID)  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( CAUSE_CONCEPT_ID IS NOT NULL AND LENGTH(CAST(CAUSE_CONCEPT_ID AS VARCHAR))>0 ) 
+AND CAUSE_CONCEPT_ID != 0  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+
+
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1269' AS RULE_ID,  
+   'NOTE' AS TB_NM,    
+   'NOTE_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+    FROM YourSchemaName.NOTE A
+    WHERE NOTE_ID IS NULL  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1270' AS RULE_ID,  
+   'NOTE' AS TB_NM,    
+   'PERSON_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.NOTE A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.PERSON B 
+WHERE B.PERSON_ID = A.PERSON_ID )  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( PERSON_ID IS NOT NULL AND LENGTH(CAST(PERSON_ID AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1271' AS RULE_ID,  
+   'NOTE' AS TB_NM,    
+   'PERSON_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+    FROM YourSchemaName.NOTE A
+    WHERE PERSON_ID IS NULL  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1272' AS RULE_ID,  
+   'NOTE' AS TB_NM,    
+   'NOTE_DATE' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.NOTE
+WHERE CASE WHEN REGEXP_MATCH(CAST(NOTE_DATE AS VARCHAR), '^[0-9]{4}-[0-9]{2}-[0-9]{2}$') IS NULL
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( NOTE_DATE IS NOT NULL AND LENGTH(CAST(NOTE_DATE AS VARCHAR))>0 )
+ INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1273' AS RULE_ID,  
+   'NOTE' AS TB_NM,    
+   'NOTE_DATE' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+    FROM YourSchemaName.NOTE A
+    WHERE NOTE_DATE IS NULL  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1274' AS RULE_ID,  
+   'NOTE' AS TB_NM,    
+   'NOTE_DATE' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.NOTE A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.DEATH B 
+WHERE B.PERSON_ID = A.PERSON_ID 
+AND A.NOTE_DATE < B.DEATH_DATE )  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( NOTE_DATE IS NOT NULL AND LENGTH(CAST(NOTE_DATE AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1275' AS RULE_ID,  
+   'NOTE' AS TB_NM,    
+   'NOTE_DATE' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.NOTE A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.VISIT_OCCURRENCE B 
+WHERE B.VISIT_OCCURRENCE_ID = A.VISIT_OCCURRENCE_ID 
+AND A.NOTE_DATE BETWEEN (B.VISIT_START_DATE - INTERVAL '7 DAY') 
+                                  AND (B.VISIT_START_DATE + INTERVAL '7 DAY') 
+)  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( NOTE_DATE IS NOT NULL AND LENGTH(CAST(NOTE_DATE AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1276' AS RULE_ID,  
+   'NOTE' AS TB_NM,    
+   'NOTE_DATETIME' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.NOTE
+WHERE CASE WHEN REGEXP_MATCH(CAST(NOTE_DATETIME AS VARCHAR), CAST(NOTE_DATE AS VARCHAR)) IS NULL
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( NOTE_DATETIME IS NOT NULL AND LENGTH(CAST(NOTE_DATETIME AS VARCHAR))>0 )
+ INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1277' AS RULE_ID,  
+   'NOTE' AS TB_NM,    
+   'NOTE_TYPE_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.NOTE A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.CONCEPT B 
+WHERE 1=1 and lower(domain_id) = 'type concept' and lower(concept_class_id) = 'type concept' and lower(standard_concept) in ('standard', 's'))  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( NOTE_TYPE_CONCEPT_ID IS NOT NULL AND LENGTH(CAST(NOTE_TYPE_CONCEPT_ID AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1278' AS RULE_ID,  
+   'NOTE' AS TB_NM,    
+   'NOTE_TYPE_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+    FROM YourSchemaName.NOTE A
+    WHERE NOTE_TYPE_CONCEPT_ID IS NULL  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1279' AS RULE_ID,  
+   'NOTE' AS TB_NM,    
+   'NOTE_CLASS_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.NOTE A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.CONCEPT B 
+WHERE 1=1 and lower(domain_id) = 'meas value' and lower(concept_class_id) in ('doc kind', 'doc role', 'doc setting', 'doc subject matter', 'doc type of service'))  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( NOTE_CLASS_CONCEPT_ID IS NOT NULL AND LENGTH(CAST(NOTE_CLASS_CONCEPT_ID AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1280' AS RULE_ID,  
+   'NOTE' AS TB_NM,    
+   'NOTE_CLASS_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+    FROM YourSchemaName.NOTE A
+    WHERE NOTE_CLASS_CONCEPT_ID IS NULL  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1283' AS RULE_ID,  
+   'NOTE' AS TB_NM,    
+   'NOTE_TEXT' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+    FROM YourSchemaName.NOTE A
+    WHERE NOTE_TEXT IS NULL  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1284' AS RULE_ID,  
+   'NOTE' AS TB_NM,    
+   'ENCODING_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.NOTE A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.CONCEPT B 
+WHERE 1=1 and concept_id = 32678)  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( ENCODING_CONCEPT_ID IS NOT NULL AND LENGTH(CAST(ENCODING_CONCEPT_ID AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1285' AS RULE_ID,  
+   'NOTE' AS TB_NM,    
+   'ENCODING_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+    FROM YourSchemaName.NOTE A
+    WHERE ENCODING_CONCEPT_ID IS NULL  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1286' AS RULE_ID,  
+   'NOTE' AS TB_NM,    
+   'LANGUAGE_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.NOTE A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.CONCEPT B 
+WHERE 1=1 and concept_id = 4182347)  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( LANGUAGE_CONCEPT_ID IS NOT NULL AND LENGTH(CAST(LANGUAGE_CONCEPT_ID AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1287' AS RULE_ID,  
+   'NOTE' AS TB_NM,    
+   'LANGUAGE_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+    FROM YourSchemaName.NOTE A
+    WHERE LANGUAGE_CONCEPT_ID IS NULL  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1289' AS RULE_ID,  
+   'NOTE' AS TB_NM,    
+   'VISIT_OCCURRENCE_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.NOTE A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.VISIT_OCCURRENCE B 
+WHERE B.VISIT_OCCURRENCE_ID = A.VISIT_OCCURRENCE_ID )  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( VISIT_OCCURRENCE_ID IS NOT NULL AND LENGTH(CAST(VISIT_OCCURRENCE_ID AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+
+
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1293' AS RULE_ID,  
+   'NOTE_NLP' AS TB_NM,    
+   'NOTE_NLP_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+    FROM YourSchemaName.NOTE_NLP A
+    WHERE NOTE_NLP_ID IS NULL  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1294' AS RULE_ID,  
+   'NOTE_NLP' AS TB_NM,    
+   'NOTE_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.NOTE_NLP A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.NOTE B 
+WHERE B.NOTE_ID = A.NOTE_ID )  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( NOTE_ID IS NOT NULL AND LENGTH(CAST(NOTE_ID AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1295' AS RULE_ID,  
+   'NOTE_NLP' AS TB_NM,    
+   'NOTE_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+    FROM YourSchemaName.NOTE_NLP A
+    WHERE NOTE_ID IS NULL  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1296' AS RULE_ID,  
+   'NOTE_NLP' AS TB_NM,    
+   'SECTION_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.NOTE_NLP A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.CONCEPT B 
+WHERE B.CONCEPT_ID = A.SECTION_CONCEPT_ID)  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( SECTION_CONCEPT_ID IS NOT NULL AND LENGTH(CAST(SECTION_CONCEPT_ID AS VARCHAR))>0 ) 
+AND SECTION_CONCEPT_ID != 0  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+
+
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1300' AS RULE_ID,  
+   'NOTE_NLP' AS TB_NM,    
+   'LEXICAL_VARIANT' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+    FROM YourSchemaName.NOTE_NLP A
+    WHERE LEXICAL_VARIANT IS NULL  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1301' AS RULE_ID,  
+   'NOTE_NLP' AS TB_NM,    
+   'NOTE_NLP_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.NOTE_NLP A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.CONCEPT B 
+WHERE B.CONCEPT_ID = A.NOTE_NLP_CONCEPT_ID)  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( NOTE_NLP_CONCEPT_ID IS NOT NULL AND LENGTH(CAST(NOTE_NLP_CONCEPT_ID AS VARCHAR))>0 ) 
+AND NOTE_NLP_CONCEPT_ID != 0  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1302' AS RULE_ID,  
+   'NOTE_NLP' AS TB_NM,    
+   'NOTE_NLP_SOURCE_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.NOTE_NLP A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.CONCEPT B 
+WHERE B.CONCEPT_ID = A.NOTE_NLP_SOURCE_CONCEPT_ID)  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( NOTE_NLP_SOURCE_CONCEPT_ID IS NOT NULL AND LENGTH(CAST(NOTE_NLP_SOURCE_CONCEPT_ID AS VARCHAR))>0 ) 
+AND NOTE_NLP_SOURCE_CONCEPT_ID != 0  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1304' AS RULE_ID,  
+   'NOTE_NLP' AS TB_NM,    
+   'NLP_DATE' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.NOTE_NLP
+WHERE CASE WHEN REGEXP_MATCH(CAST(NLP_DATE AS VARCHAR), '^[0-9]{4}-[0-9]{2}-[0-9]{2}$') IS NULL
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( NLP_DATE IS NOT NULL AND LENGTH(CAST(NLP_DATE AS VARCHAR))>0 )
+ INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1305' AS RULE_ID,  
+   'NOTE_NLP' AS TB_NM,    
+   'NLP_DATE' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+    FROM YourSchemaName.NOTE_NLP A
+    WHERE NLP_DATE IS NULL  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1306' AS RULE_ID,  
+   'NOTE_NLP' AS TB_NM,    
+   'NLP_DATETIME' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.NOTE_NLP
+WHERE CASE WHEN REGEXP_MATCH(CAST(NLP_DATETIME AS VARCHAR), CAST(NLP_DATE AS VARCHAR)) IS NULL
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( NLP_DATETIME IS NOT NULL AND LENGTH(CAST(NLP_DATETIME AS VARCHAR))>0 )
+ INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+
+
+
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1311' AS RULE_ID,  
+   'SPECIMEN' AS TB_NM,    
+   'SPECIMEN_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+    FROM YourSchemaName.SPECIMEN A
+    WHERE SPECIMEN_ID IS NULL  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1312' AS RULE_ID,  
+   'SPECIMEN' AS TB_NM,    
+   'PERSON_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.SPECIMEN A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.PERSON B 
+WHERE B.PERSON_ID = A.PERSON_ID )  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( PERSON_ID IS NOT NULL AND LENGTH(CAST(PERSON_ID AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1313' AS RULE_ID,  
+   'SPECIMEN' AS TB_NM,    
+   'PERSON_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+    FROM YourSchemaName.SPECIMEN A
+    WHERE PERSON_ID IS NULL  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1314' AS RULE_ID,  
+   'SPECIMEN' AS TB_NM,    
+   'SPECIMEN_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.SPECIMEN A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.CONCEPT B 
+WHERE 1=1 and lower(domain_id) = 'specimen' and lower(standard_concept) in ('standard', 's'))  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( SPECIMEN_CONCEPT_ID IS NOT NULL AND LENGTH(CAST(SPECIMEN_CONCEPT_ID AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1315' AS RULE_ID,  
+   'SPECIMEN' AS TB_NM,    
+   'SPECIMEN_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+    FROM YourSchemaName.SPECIMEN A
+    WHERE SPECIMEN_CONCEPT_ID IS NULL  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1316' AS RULE_ID,  
+   'SPECIMEN' AS TB_NM,    
+   'SPECIMEN_TYPE_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.SPECIMEN A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.CONCEPT B 
+WHERE 1=1 and lower(domain_id) = 'type concept' and lower(concept_class_id) = 'type concept' and lower(standard_concept) in ('standard', 's'))  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( SPECIMEN_TYPE_CONCEPT_ID IS NOT NULL AND LENGTH(CAST(SPECIMEN_TYPE_CONCEPT_ID AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1317' AS RULE_ID,  
+   'SPECIMEN' AS TB_NM,    
+   'SPECIMEN_TYPE_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+    FROM YourSchemaName.SPECIMEN A
+    WHERE SPECIMEN_TYPE_CONCEPT_ID IS NULL  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1318' AS RULE_ID,  
+   'SPECIMEN' AS TB_NM,    
+   'SPECIMEN_DATE' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.SPECIMEN
+WHERE CASE WHEN REGEXP_MATCH(CAST(SPECIMEN_DATE AS VARCHAR), '^[0-9]{4}-[0-9]{2}-[0-9]{2}$') IS NULL
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( SPECIMEN_DATE IS NOT NULL AND LENGTH(CAST(SPECIMEN_DATE AS VARCHAR))>0 )
+ INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1319' AS RULE_ID,  
+   'SPECIMEN' AS TB_NM,    
+   'SPECIMEN_DATE' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+    FROM YourSchemaName.SPECIMEN A
+    WHERE SPECIMEN_DATE IS NULL  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1320' AS RULE_ID,  
+   'SPECIMEN' AS TB_NM,    
+   'SPECIMEN_DATE' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.SPECIMEN A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.DEATH B 
+WHERE B.PERSON_ID = A.PERSON_ID 
+AND A.SPECIMEN_DATE < B.DEATH_DATE )  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( SPECIMEN_DATE IS NOT NULL AND LENGTH(CAST(SPECIMEN_DATE AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1321' AS RULE_ID,  
+   'SPECIMEN' AS TB_NM,    
+   'SPECIMEN_DATETIME' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.SPECIMEN
+WHERE CASE WHEN REGEXP_MATCH(CAST(SPECIMEN_DATETIME AS VARCHAR), CAST(SPECIMEN_DATE AS VARCHAR)) IS NULL
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( SPECIMEN_DATETIME IS NOT NULL AND LENGTH(CAST(SPECIMEN_DATETIME AS VARCHAR))>0 )
+ INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1322' AS RULE_ID,  
+   'SPECIMEN' AS TB_NM,    
+   'QUANTITY' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.SPECIMEN A
+WHERE QUANTITY IS NOT NULL AND LENGTH(CAST(QUANTITY AS VARCHAR)) > 0 
+AND REGEXP_MATCH(CAST(QUANTITY AS VARCHAR), '^[-+]?[0-9]+(\.[0-9]+)?$') IS NULL
+  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1323' AS RULE_ID,  
+   'SPECIMEN' AS TB_NM,    
+   'UNIT_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.SPECIMEN A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.CONCEPT B 
+WHERE 1=1 and lower(domain_id) = 'unit' and lower(standard_concept) in ('standard', 's'))  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( UNIT_CONCEPT_ID IS NOT NULL AND LENGTH(CAST(UNIT_CONCEPT_ID AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1324' AS RULE_ID,  
+   'SPECIMEN' AS TB_NM,    
+   'ANATOMIC_SITE_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.SPECIMEN A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.CONCEPT B 
+WHERE 1=1 and lower(domain_id) = 'spec anatomic site' and lower(concept_class_id) = 'body structure' and lower(standard_concept) in ('standard', 's'))  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( ANATOMIC_SITE_CONCEPT_ID IS NOT NULL AND LENGTH(CAST(ANATOMIC_SITE_CONCEPT_ID AS VARCHAR))>0 )  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+
+BEGIN
+    -- 쿼리 결과를 변수에 저장
+    SELECT 'ID1325' AS RULE_ID,  
+   'SPECIMEN' AS TB_NM,    
+   'DISEASE_STATUS_CONCEPT_ID' AS COL_NM, 
+	COUNT(*) AS ERR_CNT   
+FROM YourSchemaName.SPECIMEN A
+WHERE CASE WHEN NOT EXISTS 
+(SELECT 1 FROM YourSchemaName.CONCEPT B 
+WHERE B.CONCEPT_ID = A.DISEASE_STATUS_CONCEPT_ID)  
+THEN 'Y' ELSE 'N' END = 'Y' 
+AND ( DISEASE_STATUS_CONCEPT_ID IS NOT NULL AND LENGTH(CAST(DISEASE_STATUS_CONCEPT_ID AS VARCHAR))>0 ) 
+AND DISEASE_STATUS_CONCEPT_ID != 0  INTO RULE_ID_VAL, TB_NM_VAL, COL_NM_VAL, ERR_CNT_VAL;
+    -- 결과를 테이블에 삽입
+    UPDATE result_quality_check SET err_cnt = ERR_CNT_VAL WHERE rule_id = RULE_ID_VAL;
+EXCEPTION WHEN OTHERS THEN
+    -- 오류 발생 시 에러 로그에 기록
+    INSERT INTO quality_check_error_log(CHK_ID, error_message)
+    VALUES (RULE_ID_VAL, SQLERRM);
+END;
+    COMMIT;
+END;
+$$;

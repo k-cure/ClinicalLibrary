@@ -1,0 +1,29 @@
+★★★★ 본 버전은 v5.3.1의 MariaDB 전용입니다.
+★★★★개별로 SQL 실행시킬 때 주의점 시작★★★★
+\\ => Ctrl+H 로 \ 로 바꾸기
+★★★★개별로 SQL 실행시킬 때 주의점 끝★★★★
+
+프로시저 실행 사용법
+1. quality_check_tot_cnt() 열기
+YourSchemaName => Ctrl+H 로 내 DB 스키마명으로 모두 바꾸기
+2. quality_check_tot_cnt() 내용 모두 복사
+3. DB 에서 프로시저 생성
+
+4. quality_check_err_cnt() 열기
+YourSchemaName => Ctrl+H 로 내 DB 스키마명으로 모두 바꾸기
+5. quality_check_err_cnt() 내용 모두 복사
+6. DB 에서 프로시저 생성
+
+7. quality_check_err_val() 열기
+YourSchemaName => Ctrl+H 로 내 DB 스키마명으로 모두 바꾸기
+8. quality_check_err_val() 내용 모두 복사
+9. DB 에서 프로시저 생성
+
+10. DB 내에서 순차적으로 다음 명령어 실행
+Call quality_check_tot_cnt();
+Call quality_check_err_cnt();
+Call quality_check_err_val();
+
+11. 결과 조회 SQL 
+select * from result_quality_check;
+12. 결과값을 복사하여 엑셀 내 "Ⅴ.진단결과" 시트에 삽입
